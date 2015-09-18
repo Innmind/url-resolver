@@ -1,0 +1,28 @@
+{
+    "name": "innmind/url-resolver",
+    "type": "library",
+    "description": "Library to resolve relative urls to absolute ones",
+    "keywords": ["url", "uri", "resolver"],
+    "homepage": "http://github.com/Innmind/url-resolver",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Baptiste Langlade",
+            "email": "langlade.baptiste@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "http://github.com/Innmind/url-resolver/issues"
+    },
+    "require": {
+        "php": ">=5.5",
+        "jeremykendall/php-domain-parser": "~3.0",
+        "symfony/validator": "~2.7"
+    },
+    "autoload": {
+        "psr-0": {
+            "Innmind\\UrlResolver": ""
+        }
+    },
+    "target-dir": "Innmind/UrlResolver"
+}
