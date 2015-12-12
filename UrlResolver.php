@@ -47,7 +47,7 @@ class UrlResolver implements ResolverInterface
     public function resolve($origin, $destination)
     {
         $origin = (string) $origin;
-        $destination = (string) $destination;
+        $destination = $this->appendProtocol((string) $destination);
         $violations = $this
             ->validator
             ->validate(
@@ -59,13 +59,7 @@ class UrlResolver implements ResolverInterface
             return $destination;
         }
 
-        if (substr($origin, 0, 2) === '//') {
-            $origin = sprintf(
-                '%s:%s',
-                $this->constraint->protocols[0],
-                $origin
-            );
-        }
+        $origin = $this->appendProtocol($origin);
 
         $violations = $this
             ->validator
@@ -285,5 +279,25 @@ class UrlResolver implements ResolverInterface
                 $url
             ));
         }
+    }
+
+    /**
+     * Append the first supported protocol when the given string start with "//"
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    protected function appendProtocol($url)
+    {
+        if (substr($url, 0, 2) === '//') {
+            $url = sprintf(
+                '%s:%s',
+                $this->constraint->protocols[0],
+                $url
+            );
+        }
+
+        return $url;
     }
 }

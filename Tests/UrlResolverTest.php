@@ -106,6 +106,13 @@ class UrlResolverTest extends \PHPUnit_Framework_TestCase
                 '../'
             )
         );
+        $this->assertSame(
+            'http://xn--example.com/',
+            $this->r->resolve(
+                'http://xn-elsewhere.com/',
+                '//xn--example.com/'
+            )
+        );
     }
 
     /**
