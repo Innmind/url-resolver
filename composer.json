@@ -17,7 +17,7 @@
     "require": {
         "php": ">=5.5",
         "jeremykendall/php-domain-parser": "~3.0",
-        "symfony/validator": "~2.7"
+        "symfony/validator": "~2.7|~3.0"
     },
     "autoload": {
         "psr-0": {
