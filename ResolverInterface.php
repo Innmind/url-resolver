@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
@@ -17,7 +18,7 @@ interface ResolverInterface
      *
      * @return string
      */
-    public function resolve($origin, $destination);
+    public function resolve(string $origin, string $destination): string;
 
     /**
      * Return the folder's path of the given url
@@ -26,7 +27,7 @@ interface ResolverInterface
      *
      * @return string
      */
-    public function folder($url);
+    public function folder(string $url): string;
 
 
     /**
@@ -42,7 +43,7 @@ interface ResolverInterface
      *
      * @return string
      */
-    public function file($url);
+    public function file(string $url): string;
 
     /**
      * Check if the url point to a folder
@@ -51,5 +52,5 @@ interface ResolverInterface
      *
      * @return bool
      */
-    public function isFolder($url);
+    public function isFolder(string $url): bool;
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
@@ -44,10 +45,9 @@ class UrlResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function resolve($origin, $destination)
+    public function resolve(string $origin, string $destination): string
     {
-        $origin = (string) $origin;
-        $destination = $this->appendProtocol((string) $destination);
+        $destination = $this->appendProtocol($destination);
         $violations = $this
             ->validator
             ->validate(
@@ -101,7 +101,7 @@ class UrlResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function folder($url)
+    public function folder(string $url): string
     {
         $this->validateUrl($url);
         $parsed = $this->parser->parseUrl($url);
@@ -124,7 +124,7 @@ class UrlResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function isFolder($url)
+    public function isFolder(string $url): bool
     {
         $this->validateUrl($url);
         $parsed = $this->parser->parseUrl($url);
@@ -135,7 +135,7 @@ class UrlResolver implements ResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function file($url)
+    public function file(string $url): string
     {
         $this->validateUrl($url);
         $parsed = $this->parser->parseUrl($url);
@@ -157,7 +157,7 @@ class UrlResolver implements ResolverInterface
      *
      * @return string
      */
-    protected function getPort(ParsedUrl $url)
+    protected function getPort(ParsedUrl $url): string
     {
         if ($url->port === null) {
             return '';
@@ -178,7 +178,7 @@ class UrlResolver implements ResolverInterface
      *
      * @return string
      */
-    protected function buildRelativeUrl($origin, $destination)
+    protected function buildRelativeUrl(string $origin, string $destination): string
     {
         if (!$this->isFolder($origin)) {
             $origin = $this->folder($origin);
@@ -200,7 +200,7 @@ class UrlResolver implements ResolverInterface
      *
      * @return string
      */
-    protected function buildQueryString($origin, $query)
+    protected function buildQueryString(string $origin, string $query): string
     {
         $parsed = $this->parser->parseUrl($origin);
 
@@ -222,7 +222,7 @@ class UrlResolver implements ResolverInterface
      *
      * @return string
      */
-    protected function buildFragment($origin, $fragment)
+    protected function buildFragment(string $origin, string $fragment): string
     {
         $parsed = $this->parser->parseUrl($origin);
 
@@ -245,7 +245,7 @@ class UrlResolver implements ResolverInterface
      *
      * @return string
      */
-    protected function buildAbsoluteUrl($origin, $path)
+    protected function buildAbsoluteUrl(string $origin, string $path): string
     {
         $parsed = $this->parser->parseUrl($origin);
 
@@ -267,7 +267,7 @@ class UrlResolver implements ResolverInterface
      *
      * @return void
      */
-    protected function validateUrl($url)
+    protected function validateUrl(string $url)
     {
         $violations = $this->validator->validate($url, [$this->constraint]);
 
@@ -286,7 +286,7 @@ class UrlResolver implements ResolverInterface
      *
      * @return string
      */
-    protected function appendProtocol($url)
+    protected function appendProtocol(string $url): string
     {
         if (substr($url, 0, 2) === '//') {
             $url = sprintf(
