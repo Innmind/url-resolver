@@ -27,19 +27,11 @@ class UrlResolver implements ResolverInterface
             $protocols = ['http', 'https'];
         }
 
-        if ($parser === null) {
-            $parser = new Parser(
-                (new PublicSuffixListManager)->getList()
-            );
-        }
-
-        if ($validator === null) {
-            $validator = Validation::createValidator();
-        }
-
         $this->constraint = new Url(['protocols' => $protocols]);
-        $this->parser = $parser;
-        $this->validator = $validator;
+        $this->parser = $parser ?? new Parser(
+            (new PublicSuffixListManager)->getList()
+        );
+        $this->validator = $validator ?? Validation::createValidator();
     }
 
     /**
