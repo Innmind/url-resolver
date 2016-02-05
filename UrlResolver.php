@@ -75,8 +75,6 @@ class UrlResolver implements ResolverInterface
             ));
         }
 
-        $origin = $this->parser->parseUrl($origin);
-
         switch (true) {
             case substr($destination, 0, 1) === '?':
                 return $this->buildQueryString($origin, $destination);
