@@ -60,7 +60,7 @@ class Path extends StringPrimitive
         $folder = dirname((string) $this);
 
         return new self(
-            $folder === '/' ? '/': $folder . '/'
+            $folder === '/' ? '/' : $folder . '/'
         );
     }
 
