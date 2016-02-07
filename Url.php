@@ -5,6 +5,7 @@ namespace Innmind\UrlResolver;
 
 use Innmind\Immutable\StringPrimitive;
 use Pdp\Parser;
+use Pdp\Uri\Url as ParsedUrl;
 
 final class Url extends StringPrimitive
 {
@@ -21,6 +22,32 @@ final class Url extends StringPrimitive
             (string) $this->pregReplace(
                 '/^[a-zA-Z]*:?\/\//',
                 (string) $scheme . '://'
+            )
+        );
+    }
+
+    /**
+     * Return a new url with the given query string
+     *
+     * @param QueryString $query
+     * @param Parser $parser Helper used to replace the query string
+     *
+     * @return self
+     */
+    public function withQueryString(QueryString $query, Parser $parser): self
+    {
+        $parsed = $parser->parseUrl((string) $this);
+
+        return new self(
+            (string) new ParsedUrl(
+                $parsed->scheme,
+                $parsed->user,
+                $parsed->pass,
+                $parsed->host,
+                $parsed->port,
+                $parsed->path,
+                (string) $query->substring(1),
+                ''
             )
         );
     }
