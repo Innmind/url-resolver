@@ -3,8 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\Specification\Fragment as FragmentSpecification;
-use Innmind\UrlResolver\Exception\InvalidArgumentException;
+use Innmind\UrlResolver\{
+    Specification\Fragment as FragmentSpecification,
+    Exception\InvalidArgumentException
+};
 use Innmind\Immutable\StringPrimitive;
 
 class Fragment extends StringPrimitive

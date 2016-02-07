@@ -3,8 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver\Tests\Specification;
 
-use Innmind\UrlResolver\Specification\RelativePath;
-use Innmind\UrlResolver\Url;
+use Innmind\UrlResolver\{
+    Specification\RelativePath,
+    Url
+};
 
 class RelativePathTest extends \PHPUnit_Framework_TestCase
 {

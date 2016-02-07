@@ -3,17 +3,21 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\Exception\ResolutionException;
-use Innmind\UrlResolver\Exception\UrlException;
-use Innmind\UrlResolver\Specification\Url as UrlSpecification;
-use Innmind\UrlResolver\Specification\QueryString as QueryStringSpecification;
-use Innmind\UrlResolver\Specification\SchemeLess;
-use Innmind\UrlResolver\Specification\Fragment as FragmentSpecification;
-use Innmind\UrlResolver\Specification\AbsolutePath;
-use Innmind\UrlResolver\Specification\RelativePath as RelativePathSpecification;
-use Pdp\Parser;
-use Pdp\PublicSuffixListManager;
-use Pdp\Uri\Url as ParsedUrl;
+use Innmind\UrlResolver\{
+    Exception\ResolutionException,
+    Exception\UrlException,
+    Specification\Url as UrlSpecification,
+    Specification\QueryString as QueryStringSpecification,
+    Specification\SchemeLess,
+    Specification\Fragment as FragmentSpecification,
+    Specification\AbsolutePath,
+    Specification\RelativePath as RelativePathSpecification
+};
+use Pdp\{
+    Parser,
+    PublicSuffixListManager,
+    Uri\Url as ParsedUrl
+};
 
 class UrlResolver implements ResolverInterface
 {

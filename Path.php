@@ -3,8 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\Specification\AbsolutePath;
-use Innmind\UrlResolver\Exception\InvalidArgumentException;
+use Innmind\UrlResolver\{
+    Specification\AbsolutePath,
+    Exception\InvalidArgumentException
+};
 use Innmind\Immutable\StringPrimitive;
 
 class Path extends StringPrimitive

@@ -3,13 +3,17 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver\Tests;
 
-use Innmind\UrlResolver\Url;
-use Innmind\UrlResolver\Scheme;
-use Innmind\UrlResolver\QueryString;
-use Innmind\UrlResolver\Fragment;
-use Innmind\UrlResolver\Path;
-use Pdp\Parser;
-use Pdp\PublicSuffixListManager;
+use Innmind\UrlResolver\{
+    Url,
+    Scheme,
+    QueryString,
+    Fragment,
+    Path
+};
+use Pdp\{
+    Parser,
+    PublicSuffixListManager
+};
 
 class UrlTest extends \PHPUnit_Framework_TestCase
 {

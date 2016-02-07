@@ -3,8 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver\Tests\Specification;
 
-use Innmind\UrlResolver\Specification\Fragment;
-use Innmind\UrlResolver\Url;
+use Innmind\UrlResolver\{
+    Specification\Fragment,
+    Url
+};
 
 class FragmentTest extends \PHPUnit_Framework_TestCase
 {

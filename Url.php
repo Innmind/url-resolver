@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace Innmind\UrlResolver;
 
 use Innmind\Immutable\StringPrimitive;
-use Pdp\Parser;
-use Pdp\Uri\Url as ParsedUrl;
+use Pdp\{
+    Parser,
+    Uri\Url as ParsedUrl
+};
 
 final class Url extends StringPrimitive
 {

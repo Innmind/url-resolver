@@ -3,8 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\Specification\QueryString as QueryStringSpecification;
-use Innmind\UrlResolver\Exception\InvalidArgumentException;
+use Innmind\UrlResolver\{
+    Specification\QueryString as QueryStringSpecification,
+    Exception\InvalidArgumentException
+};
 use Innmind\Immutable\StringPrimitive;
 
 class QueryString extends StringPrimitive

@@ -3,8 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver\Tests\Specification;
 
-use Innmind\UrlResolver\Specification\Url as UrlSpecification;
-use Innmind\UrlResolver\Url;
+use Innmind\UrlResolver\{
+    Specification\Url as UrlSpecification,
+    Url
+};
 
 class UrlTest extends \PHPUnit_Framework_TestCase
 {
