@@ -51,4 +51,30 @@ final class Url extends StringPrimitive
             )
         );
     }
+
+    /**
+     * Return a new url with the given fragment
+     *
+     * @param Fragment $fragment
+     * @param Parser $parser Helper used to replace the fragment
+     *
+     * @return self
+     */
+    public function withFragment(Fragment $fragment, Parser $parser): self
+    {
+        $parsed = $parser->parseUrl((string) $this);
+
+        return new self(
+            (string) new ParsedUrl(
+                $parsed->scheme,
+                $parsed->user,
+                $parsed->pass,
+                $parsed->host,
+                $parsed->port,
+                $parsed->path,
+                $parsed->query,
+                (string) $fragment->substring(1)
+            )
+        );
+    }
 }

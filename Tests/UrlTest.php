@@ -6,6 +6,7 @@ namespace Innmind\UrlResolver\Tests;
 use Innmind\UrlResolver\Url;
 use Innmind\UrlResolver\Scheme;
 use Innmind\UrlResolver\QueryString;
+use Innmind\UrlResolver\Fragment;
 use Pdp\Parser;
 use Pdp\PublicSuffixListManager;
 
@@ -39,5 +40,18 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($u, $u2);
         $this->assertSame('http://localhost:8080/foo/?foo=bar', (string) $u);
         $this->assertSame('http://localhost:8080/foo/?bar=baz', (string) $u2);
+    }
+
+    public function testWithFragment()
+    {
+        $u = new Url('http://localhost:8080/foo/?foo=bar#baz');
+
+        $u2 = $u->withFragment(
+            new Fragment('#bar'),
+            new Parser((new PublicSuffixListManager)->getList())
+        );
+        $this->assertNotSame($u, $u2);
+        $this->assertSame('http://localhost:8080/foo/?foo=bar#baz', (string) $u);
+        $this->assertSame('http://localhost:8080/foo/?foo=bar#bar', (string) $u2);
     }
 }
