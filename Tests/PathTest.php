@@ -14,7 +14,7 @@ class PathTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException Innmind\UrlResolver\Exception\InvalidArgumentException
-     * @expectedException The value "42" is not a valid path
+     * @expectedExceptionMessage The value "../relative/path" is not a valid path
      */
     public function testThrowWhenInvalidPath()
     {

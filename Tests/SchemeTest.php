@@ -17,7 +17,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException Innmind\UrlResolver\Exception\InvalidArgumentException
-     * @expectedException The value "42" is not a valid scheme
+     * @expectedExceptionMessage The value "42" is not a valid scheme
      */
     public function testThrowWhenInvalidScheme()
     {
