@@ -15,9 +15,9 @@
         "issues": "http://github.com/Innmind/url-resolver/issues"
     },
     "require": {
-        "php": ">=5.5",
+        "php": "~7.0",
         "jeremykendall/php-domain-parser": "~3.0",
-        "symfony/validator": "~2.7|~3.0"
+        "innmind/immutable": "~1.0"
     },
     "autoload": {
         "psr-0": {
