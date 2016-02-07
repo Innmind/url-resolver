@@ -5,33 +5,30 @@ namespace Innmind\UrlResolver;
 
 use Innmind\UrlResolver\Exception\ResolutionException;
 use Innmind\UrlResolver\Exception\UrlException;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\ValidatorInterface;
-use Symfony\Component\Validator\Constraints\Url;
+use Innmind\UrlResolver\Specification\Url as UrlSpecification;
+use Innmind\UrlResolver\Specification\QueryString as QueryStringSpecification;
+use Innmind\UrlResolver\Specification\SchemeLess;
+use Innmind\UrlResolver\Specification\Fragment as FragmentSpecification;
+use Innmind\UrlResolver\Specification\AbsolutePath;
+use Innmind\UrlResolver\Specification\RelativePath as RelativePathSpecification;
 use Pdp\Parser;
 use Pdp\PublicSuffixListManager;
 use Pdp\Uri\Url as ParsedUrl;
 
 class UrlResolver implements ResolverInterface
 {
+    protected $urlSpecification;
     protected $parser;
-    protected $validator;
-    protected $constraint;
 
     public function __construct(
-        array $protocols,
-        Parser $parser = null,
-        ValidatorInterface $validator = null
+        array $schemes = [],
+        Parser $parser = null
     ) {
-        if (empty($protocols)) {
-            $protocols = ['http', 'https'];
-        }
+        $this->urlSpecification = new UrlSpecification($schemes);
 
-        $this->constraint = new Url(['protocols' => $protocols]);
         $this->parser = $parser ?? new Parser(
             (new PublicSuffixListManager)->getList()
         );
-        $this->validator = $validator ?? Validation::createValidator();
     }
 
     /**
@@ -39,28 +36,15 @@ class UrlResolver implements ResolverInterface
      */
     public function resolve(string $origin, string $destination): string
     {
-        $destination = $this->appendProtocol($destination);
-        $violations = $this
-            ->validator
-            ->validate(
-                $destination,
-                [$this->constraint]
-            );
+        $destination = $this->createUrl($destination);
 
-        if ($violations->count() === 0) {
-            return $destination;
+        if ($this->urlSpecification->isSatisfiedBy($destination)) {
+            return (string) $destination;
         }
 
-        $origin = $this->appendProtocol($origin);
+        $origin = $this->createUrl($origin);
 
-        $violations = $this
-            ->validator
-            ->validate(
-                $origin,
-                [$this->constraint]
-            );
-
-        if ($violations->count() > 0) {
+        if (!$this->urlSpecification->isSatisfiedBy($origin)) {
             throw new UrlException(sprintf(
                 'The origin variable is not a url (given: %s)',
                 $origin
@@ -68,20 +52,35 @@ class UrlResolver implements ResolverInterface
         }
 
         switch (true) {
-            case substr($destination, 0, 1) === '?':
-                return $this->buildQueryString($origin, $destination);
-            case substr($destination, 0, 1) === '#':
-                return $this->buildFragment($origin, $destination);
-            case substr($destination, 0, 1) === '/':
-                return $this->buildAbsoluteUrl($origin, $destination);
-            case substr($destination, 0, 2) === './':
-                $destination = substr($destination, 2);
-                if ($destination === false) {
-                    $destination = '';
-                }
-            case substr($destination, 0, 1) !== '/':
-            case substr($destination, 0, 3) === '../':
-                return $this->buildRelativeUrl($origin, $destination);
+            case (new QueryStringSpecification)->isSatisfiedBy($destination):
+                return (string) $origin->withQueryString(
+                    new QueryString((string) $destination),
+                    $this->parser
+                );
+
+            case (new FragmentSpecification)->isSatisfiedBy($destination):
+                return (string) $origin->withFragment(
+                    new Fragment((string) $destination),
+                    $this->parser
+                );
+
+            case (new AbsolutePath)->isSatisfiedBy($destination):
+                return (string) $origin->withPath(
+                    new Path((string) $destination),
+                    $this->parser
+                );
+
+            case (new RelativePathSpecification)->isSatisfiedBy($destination):
+                $originFolder = $this
+                    ->parser
+                    ->parseUrl((string) $origin)
+                    ->path;
+
+                return (string) $origin->withPath(
+                    (new Path($originFolder))
+                        ->pointingTo(new RelativePath((string) $destination)),
+                    $this->parser
+                );
         }
 
         throw new ResolutionException(sprintf(
@@ -97,19 +96,17 @@ class UrlResolver implements ResolverInterface
     {
         $this->validateUrl($url);
         $parsed = $this->parser->parseUrl($url);
+        $path = new Path($parsed->path);
 
-        $folder = dirname($parsed->path);
-
-        if (substr($folder, -1) !== '/') {
-            $folder .= '/';
-        }
-
-        return sprintf(
-            '%s://%s%s%s',
+        return (string) new ParsedUrl(
             $parsed->scheme,
-            (string) $parsed->host,
-            $this->getPort($parsed),
-            $folder
+            $parsed->user,
+            $parsed->pass,
+            $parsed->host,
+            $parsed->port,
+            (string) $path->folder(),
+            '',
+            ''
         );
     }
 
@@ -121,7 +118,7 @@ class UrlResolver implements ResolverInterface
         $this->validateUrl($url);
         $parsed = $this->parser->parseUrl($url);
 
-        return substr($parsed->path, -1) === '/';
+        return (new Path($parsed->path))->isFolder();
     }
 
     /**
@@ -132,121 +129,15 @@ class UrlResolver implements ResolverInterface
         $this->validateUrl($url);
         $parsed = $this->parser->parseUrl($url);
 
-        return sprintf(
-            '%s://%s%s%s%s',
+        return (string) new ParsedUrl(
             $parsed->scheme,
-            (string) $parsed->host,
-            $this->getPort($parsed),
+            $parsed->user,
+            $parsed->pass,
+            $parsed->host,
+            $parsed->port,
             $parsed->path,
-            $parsed->query ? '?' . $parsed->query : ''
-        );
-    }
-
-    /**
-     * Return the port as string for the given parsed url
-     *
-     * @param ParsedUrl $url
-     *
-     * @return string
-     */
-    protected function getPort(ParsedUrl $url): string
-    {
-        if ($url->port === null) {
-            return '';
-        } else if ($url->scheme === 'http' && (int) $url->port === 80) {
-            return '';
-        } else if ($url->scheme === 'https' && (int) $url->port === 443) {
-            return '';
-        } else {
-            return ':' . $url->port;
-        }
-    }
-
-    /**
-     * Build a url from a relative destination
-     *
-     * @param string $origin
-     * @param string $destination
-     *
-     * @return string
-     */
-    protected function buildRelativeUrl(string $origin, string $destination): string
-    {
-        if (!$this->isFolder($origin)) {
-            $origin = $this->folder($origin);
-        }
-
-        if (substr($destination, 0, 3) === '../') {
-            $origin = $this->folder($origin);
-            $destination = substr($destination, 3);
-        }
-
-        return $origin . $destination;
-    }
-
-    /**
-     * Resolve a query string
-     *
-     * @param string $origin
-     * @param string $query
-     *
-     * @return string
-     */
-    protected function buildQueryString(string $origin, string $query): string
-    {
-        $parsed = $this->parser->parseUrl($origin);
-
-        return sprintf(
-            '%s://%s%s%s%s',
-            $parsed->scheme,
-            (string) $parsed->host,
-            $this->getPort($parsed),
-            $parsed->path,
-            $query
-        );
-    }
-
-    /**
-     * Resolve to a fragment url
-     *
-     * @param string $origin
-     * @param string $fragment
-     *
-     * @return string
-     */
-    protected function buildFragment(string $origin, string $fragment): string
-    {
-        $parsed = $this->parser->parseUrl($origin);
-
-        return sprintf(
-            '%s://%s%s%s%s%s',
-            $parsed->scheme,
-            (string) $parsed->host,
-            $this->getPort($parsed),
-            $parsed->path,
-            $parsed->query ? '?' . $parsed->query : '',
-            $fragment
-        );
-    }
-
-    /**
-     * Resolve an absolute path
-     *
-     * @param string $origin
-     * @param string $path
-     *
-     * @return string
-     */
-    protected function buildAbsoluteUrl(string $origin, string $path): string
-    {
-        $parsed = $this->parser->parseUrl($origin);
-
-        return sprintf(
-            '%s://%s%s%s',
-            $parsed->scheme,
-            (string) $parsed->host,
-            $this->getPort($parsed),
-            $path
+            $parsed->query,
+            ''
         );
     }
 
@@ -261,9 +152,7 @@ class UrlResolver implements ResolverInterface
      */
     protected function validateUrl(string $url)
     {
-        $violations = $this->validator->validate($url, [$this->constraint]);
-
-        if ($violations->count() > 0) {
+        if (!(new UrlSpecification)->isSatisfiedBy(new Url($url))) {
             throw new UrlException(sprintf(
                 'The string "%s" is not a valid url',
                 $url
@@ -272,19 +161,19 @@ class UrlResolver implements ResolverInterface
     }
 
     /**
-     * Append the first supported protocol when the given string start with "//"
+     * Create a Url object from the given string
      *
      * @param string $url
      *
-     * @return string
+     * @return Url
      */
-    protected function appendProtocol(string $url): string
+    private function createUrl(string $url): Url
     {
-        if (substr($url, 0, 2) === '//') {
-            $url = sprintf(
-                '%s:%s',
-                $this->constraint->protocols[0],
-                $url
+        $url = new Url($url);
+
+        if ((new SchemeLess)->isSatisfiedBy($url)) {
+            $url = $url->appendScheme(
+                new Scheme($this->schemes[0] ?? 'http')
             );
         }
 

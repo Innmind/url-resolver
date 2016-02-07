@@ -94,14 +94,14 @@ class UrlResolverTest extends \PHPUnit_Framework_TestCase
             )
         );
         $this->assertSame(
-            'http://xn--example.com/',
+            'http://xn--example.com:80/',
             $this->r->resolve(
                 'http://xn--example.com:80/foo/',
                 '../'
             )
         );
         $this->assertSame(
-            'https://xn--example.com/',
+            'https://xn--example.com:443/',
             $this->r->resolve(
                 'https://xn--example.com:443/foo/',
                 '../'
