@@ -77,4 +77,30 @@ final class Url extends StringPrimitive
             )
         );
     }
+
+    /**
+     * Return a new url with the given path
+     *
+     * @param Path $path
+     * @param Parser $parser Helper used to replace the path
+     *
+     * @return self
+     */
+    public function withPath(Path $path, Parser $parser): self
+    {
+        $parsed = $parser->parseUrl((string) $this);
+
+        return new self(
+            (string) new ParsedUrl(
+                $parsed->scheme,
+                $parsed->user,
+                $parsed->pass,
+                $parsed->host,
+                $parsed->port,
+                (string) $path,
+                '',
+                ''
+            )
+        );
+    }
 }
