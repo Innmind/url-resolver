@@ -86,6 +86,7 @@ class PathTest extends \PHPUnit_Framework_TestCase
             ['/path/to/content/', './bar', '/path/to/content/bar'],
             ['/path/to/content/', 'bar', '/path/to/content/bar'],
             ['/path/to/content/?query=foo#fragment', 'bar', '/path/to/content/bar'],
+            ['/foo/baz', '../bar/foo', '/bar/foo'],
         ];
     }
 }
