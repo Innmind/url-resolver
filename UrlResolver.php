@@ -19,11 +19,11 @@ use Pdp\{
     Uri\Url as ParsedUrl
 };
 
-class UrlResolver implements ResolverInterface
+final class UrlResolver implements ResolverInterface
 {
-    protected $schemes;
-    protected $urlSpecification;
-    protected $parser;
+    private $schemes;
+    private $urlSpecification;
+    private $parser;
 
     public function __construct(
         array $schemes = [],
@@ -156,7 +156,7 @@ class UrlResolver implements ResolverInterface
      *
      * @return void
      */
-    protected function validateUrl(string $url)
+    private function validateUrl(string $url)
     {
         if (!(new UrlSpecification)->isSatisfiedBy(new Url($url))) {
             throw new UrlException(sprintf(
