@@ -21,6 +21,7 @@ use Pdp\{
 
 class UrlResolver implements ResolverInterface
 {
+    protected $schemes;
     protected $urlSpecification;
     protected $parser;
 
@@ -28,6 +29,7 @@ class UrlResolver implements ResolverInterface
         array $schemes = [],
         Parser $parser = null
     ) {
+        $this->schemes = $schemes;
         $this->urlSpecification = new UrlSpecification($schemes);
 
         $this->parser = $parser ?? new Parser(
