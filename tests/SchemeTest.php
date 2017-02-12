@@ -1,18 +1,19 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\UrlResolver\Tests;
+namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\Scheme;
+use PHPUnit\Framework\TestCase;
 
-class SchemeTest extends \PHPUnit_Framework_TestCase
+class SchemeTest extends TestCase
 {
     public function testValidScheme()
     {
-        new Scheme('http');
-        new Scheme('https');
-        new Scheme('ftp');
-        new Scheme('unknown');
+        $this->assertSame('http', (string) new Scheme('http'));
+        $this->assertSame('https', (string) new Scheme('https'));
+        $this->assertSame('ftp', (string) new Scheme('ftp'));
+        $this->assertSame('unknown', (string) new Scheme('unknown'));
     }
 
     /**

@@ -24,6 +24,6 @@ class RelativePath
             return true;
         }
 
-        return !$url->match('/^(\/|\?|#)/');
+        return !$url->matches('/^(\/|\?|#)/');
     }
 }

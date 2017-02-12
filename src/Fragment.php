@@ -4,18 +4,18 @@ declare(strict_types = 1);
 namespace Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
-    Specification\RelativePath as RelativePathSpecification,
+    Specification\Fragment as FragmentSpecification,
     Exception\InvalidArgumentException
 };
-use Innmind\Immutable\StringPrimitive;
+use Innmind\Immutable\Str;
 
-class RelativePath extends StringPrimitive
+class Fragment extends Str
 {
     public function __construct(string $value)
     {
-        if (!(new RelativePathSpecification)->isSatisfiedBy(new Url($value))) {
+        if (!(new FragmentSpecification)->isSatisfiedBy(new Url($value))) {
             throw new InvalidArgumentException(sprintf(
-                'The value "%s" is not a valid relative path',
+                'The value "%s" is not a valid fragment',
                 $value
             ));
         }

@@ -52,6 +52,6 @@ class Url
      */
     public function isSatisfiedBy(UrlModel $url): bool
     {
-        return $url->match($this->regex);
+        return $url->matches($this->regex);
     }
 }

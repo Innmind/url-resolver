@@ -1,14 +1,15 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\UrlResolver\Tests\Specification;
+namespace Tests\Innmind\UrlResolver\Specification;
 
 use Innmind\UrlResolver\{
     Specification\SchemeLess,
     Url
 };
+use PHPUnit\Framework\TestCase;
 
-class SchemeLessTest extends \PHPUnit_Framework_TestCase
+class SchemeLessTest extends TestCase
 {
     public function testIsStatisfiedBy()
     {

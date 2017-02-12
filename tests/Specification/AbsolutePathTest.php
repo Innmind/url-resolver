@@ -1,14 +1,15 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\UrlResolver\Tests\Specification;
+namespace Tests\Innmind\UrlResolver\Specification;
 
 use Innmind\UrlResolver\{
     Specification\AbsolutePath,
     Url
 };
+use PHPUnit\Framework\TestCase;
 
-class AbsolutePathTest extends \PHPUnit_Framework_TestCase
+class AbsolutePathTest extends TestCase
 {
     public function testIsSatisfiedBy()
     {

@@ -7,9 +7,9 @@ use Innmind\UrlResolver\{
     Specification\AbsolutePath,
     Exception\InvalidArgumentException
 };
-use Innmind\Immutable\StringPrimitive;
+use Innmind\Immutable\Str;
 
-class Path extends StringPrimitive
+class Path extends Str
 {
     public function __construct(string $value)
     {

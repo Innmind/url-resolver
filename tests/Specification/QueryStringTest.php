@@ -1,14 +1,15 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\UrlResolver\Tests\Specification;
+namespace Tests\Innmind\UrlResolver\Specification;
 
 use Innmind\UrlResolver\{
     Specification\QueryString,
     Url
 };
+use PHPUnit\Framework\TestCase;
 
-class QueryStringTest extends \PHPUnit_Framework_TestCase
+class QueryStringTest extends TestCase
 {
     public function testIsSatisfiedBy()
     {
