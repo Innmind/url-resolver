@@ -3,13 +3,13 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\Immutable\StringPrimitive;
+use Innmind\Immutable\Str;
 use Pdp\{
     Parser,
     Uri\Url as ParsedUrl
 };
 
-final class Url extends StringPrimitive
+final class Url extends Str
 {
     /**
      * Append the given scheme to the url

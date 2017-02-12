@@ -7,9 +7,9 @@ use Innmind\UrlResolver\{
     Specification\Fragment as FragmentSpecification,
     Exception\InvalidArgumentException
 };
-use Innmind\Immutable\StringPrimitive;
+use Innmind\Immutable\Str;
 
-class Fragment extends StringPrimitive
+class Fragment extends Str
 {
     public function __construct(string $value)
     {

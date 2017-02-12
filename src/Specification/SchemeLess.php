@@ -20,6 +20,6 @@ class SchemeLess
             return true;
         }
 
-        return !$url->match('/^[a-zA-Z]*:?\/\//');
+        return !$url->matches('/^[a-zA-Z]*:?\/\//');
     }
 }

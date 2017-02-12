@@ -7,9 +7,9 @@ use Innmind\UrlResolver\{
     Specification\QueryString as QueryStringSpecification,
     Exception\InvalidArgumentException
 };
-use Innmind\Immutable\StringPrimitive;
+use Innmind\Immutable\Str;
 
-class QueryString extends StringPrimitive
+class QueryString extends Str
 {
     public function __construct(string $value)
     {
