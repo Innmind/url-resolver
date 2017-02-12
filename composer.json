@@ -20,9 +20,13 @@
         "innmind/immutable": "~1.0"
     },
     "autoload": {
-        "psr-0": {
-            "Innmind\\UrlResolver": ""
+        "psr-4": {
+            "Innmind\\UrlResolver\\": "src/"
         }
     },
-    "target-dir": "Innmind/UrlResolver"
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Innmind\\UrlResolver\\": "tests/"
+        }
+    }
 }

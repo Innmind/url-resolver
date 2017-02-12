@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\UrlResolver\Tests;
+namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Path,
