@@ -7,8 +7,9 @@ use Innmind\UrlResolver\{
     Specification\Fragment,
     Url
 };
+use PHPUnit\Framework\TestCase;
 
-class FragmentTest extends \PHPUnit_Framework_TestCase
+class FragmentTest extends TestCase
 {
     public function testIsSatisfiedBy()
     {

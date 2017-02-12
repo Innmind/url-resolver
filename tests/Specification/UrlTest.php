@@ -7,8 +7,9 @@ use Innmind\UrlResolver\{
     Specification\Url as UrlSpecification,
     Url
 };
+use PHPUnit\Framework\TestCase;
 
-class UrlTest extends \PHPUnit_Framework_TestCase
+class UrlTest extends TestCase
 {
     public function testIsSatisfiedBy()
     {

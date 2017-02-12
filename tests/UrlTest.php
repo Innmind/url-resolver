@@ -14,8 +14,9 @@ use Pdp\{
     Parser,
     PublicSuffixListManager
 };
+use PHPUnit\Framework\TestCase;
 
-class UrlTest extends \PHPUnit_Framework_TestCase
+class UrlTest extends TestCase
 {
     public function testAppendScheme()
     {

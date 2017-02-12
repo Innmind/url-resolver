@@ -4,14 +4,24 @@ declare(strict_types = 1);
 namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\QueryString;
+use PHPUnit\Framework\TestCase;
 
-class QueryStringTest extends \PHPUnit_Framework_TestCase
+class QueryStringTest extends TestCase
 {
     public function testNotThrowWhenBuilding()
     {
-        new QueryString('?foo');
-        new QueryString('?foo=bar');
-        new QueryString('?foo=bar#fragment');
+        $this->assertSame(
+            '?foo',
+            (string) new QueryString('?foo')
+        );
+        $this->assertSame(
+            '?foo=bar',
+            (string) new QueryString('?foo=bar')
+        );
+        $this->assertSame(
+            '?foo=bar#fragment',
+            (string) new QueryString('?foo=bar#fragment')
+        );
     }
 
     /**

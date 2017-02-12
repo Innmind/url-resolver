@@ -7,12 +7,13 @@ use Innmind\UrlResolver\{
     Path,
     RelativePath
 };
+use PHPUnit\Framework\TestCase;
 
-class PathTest extends \PHPUnit_Framework_TestCase
+class PathTest extends TestCase
 {
     public function testValidPath()
     {
-        new Path('/path/to/content');
+        $this->assertSame('/path/to/content', (string) new Path('/path/to/content'));
     }
 
     /**

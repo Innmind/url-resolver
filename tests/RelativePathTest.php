@@ -4,17 +4,36 @@ declare(strict_types = 1);
 namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\RelativePath;
+use PHPUnit\Framework\TestCase;
 
-class RelativePathTest extends \PHPUnit_Framework_TestCase
+class RelativePathTest extends TestCase
 {
     public function testValidRelativePath()
     {
-        new RelativePath('../path/to/content');
-        new RelativePath('./path/to/content');
-        new RelativePath('path/to/content');
-        new RelativePath('.path/to/content');
-        new RelativePath('!path/to/content');
-        new RelativePath('42path/to/content');
+        $this->assertSame(
+            '../path/to/content',
+            (string) new RelativePath('../path/to/content')
+        );
+        $this->assertSame(
+            './path/to/content',
+            (string) new RelativePath('./path/to/content')
+        );
+        $this->assertSame(
+            'path/to/content',
+            (string) new RelativePath('path/to/content')
+        );
+        $this->assertSame(
+            '.path/to/content',
+            (string) new RelativePath('.path/to/content')
+        );
+        $this->assertSame(
+            '!path/to/content',
+            (string) new RelativePath('!path/to/content')
+        );
+        $this->assertSame(
+            '42path/to/content',
+            (string) new RelativePath('42path/to/content')
+        );
     }
 
     /**

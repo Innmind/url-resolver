@@ -7,8 +7,9 @@ use Innmind\UrlResolver\{
     Specification\SchemeLess,
     Url
 };
+use PHPUnit\Framework\TestCase;
 
-class SchemeLessTest extends \PHPUnit_Framework_TestCase
+class SchemeLessTest extends TestCase
 {
     public function testIsStatisfiedBy()
     {

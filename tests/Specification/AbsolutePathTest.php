@@ -7,8 +7,9 @@ use Innmind\UrlResolver\{
     Specification\AbsolutePath,
     Url
 };
+use PHPUnit\Framework\TestCase;
 
-class AbsolutePathTest extends \PHPUnit_Framework_TestCase
+class AbsolutePathTest extends TestCase
 {
     public function testIsSatisfiedBy()
     {

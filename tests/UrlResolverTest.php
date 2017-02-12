@@ -4,8 +4,9 @@ declare(strict_types = 1);
 namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\UrlResolver;
+use PHPUnit\Framework\TestCase;
 
-class UrlResolverTest extends \PHPUnit_Framework_TestCase
+class UrlResolverTest extends TestCase
 {
     protected $r;
 

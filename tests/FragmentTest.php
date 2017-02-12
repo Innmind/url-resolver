@@ -4,12 +4,13 @@ declare(strict_types = 1);
 namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\Fragment;
+use PHPUnit\Framework\TestCase;
 
-class FragmentTest extends \PHPUnit_Framework_TestCase
+class FragmentTest extends TestCase
 {
     public function testNotThrowWhenBuilding()
     {
-        new Fragment('#fragment');
+        $this->assertSame('#fragment', (string) new Fragment('#fragment'));
     }
 
     /**

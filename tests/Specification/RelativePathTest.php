@@ -7,8 +7,9 @@ use Innmind\UrlResolver\{
     Specification\RelativePath,
     Url
 };
+use PHPUnit\Framework\TestCase;
 
-class RelativePathTest extends \PHPUnit_Framework_TestCase
+class RelativePathTest extends TestCase
 {
     public function testIsSatisfiedBy()
     {
