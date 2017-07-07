@@ -80,7 +80,7 @@ final class UrlResolver implements ResolverInterface
                 $originFolder = $this
                     ->parser
                     ->parseUrl((string) $origin)
-                    ->path;
+                    ->path ?? '/';
 
                 return (string) $origin->withPath(
                     (new Path($originFolder))

@@ -20,6 +20,13 @@ class UrlResolverTest extends TestCase
         $this->assertSame(
             'http://example.com/foo',
             $this->r->resolve(
+                'http://example.com',
+                'foo'
+            )
+        );
+        $this->assertSame(
+            'http://example.com/foo',
+            $this->r->resolve(
                 'http://example.com/bar',
                 'http://example.com/foo'
             )
