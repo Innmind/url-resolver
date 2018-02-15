@@ -13,10 +13,11 @@ use Innmind\UrlResolver\{
     Specification\AbsolutePath,
     Specification\RelativePath as RelativePathSpecification
 };
-use Pdp\{
-    Parser,
-    PublicSuffixListManager,
-    Uri\Url as ParsedUrl
+use Innmind\Url\{
+    Url as Structure,
+    Path as UrlPath,
+    NullQuery,
+    NullFragment
 };
 
 final class UrlResolver implements ResolverInterface
@@ -25,16 +26,10 @@ final class UrlResolver implements ResolverInterface
     private $urlSpecification;
     private $parser;
 
-    public function __construct(
-        array $schemes = [],
-        Parser $parser = null
-    ) {
+    public function __construct(array $schemes = [])
+    {
         $this->schemes = $schemes;
         $this->urlSpecification = new UrlSpecification($schemes);
-
-        $this->parser = $parser ?? new Parser(
-            (new PublicSuffixListManager)->getList()
-        );
     }
 
     /**
@@ -60,32 +55,25 @@ final class UrlResolver implements ResolverInterface
         switch (true) {
             case (new QueryStringSpecification)->isSatisfiedBy($destination):
                 return (string) $origin->withQueryString(
-                    new QueryString((string) $destination),
-                    $this->parser
+                    new QueryString((string) $destination)
                 );
 
             case (new FragmentSpecification)->isSatisfiedBy($destination):
                 return (string) $origin->withFragment(
-                    new Fragment((string) $destination),
-                    $this->parser
+                    new Fragment((string) $destination)
                 );
 
             case (new AbsolutePath)->isSatisfiedBy($destination):
                 return (string) $origin->withPath(
-                    new Path((string) $destination),
-                    $this->parser
+                    new Path((string) $destination)
                 );
 
             case (new RelativePathSpecification)->isSatisfiedBy($destination):
-                $originFolder = $this
-                    ->parser
-                    ->parseUrl((string) $origin)
-                    ->path ?? '/';
+                $originFolder = (string) Structure::fromString((string) $origin)->path();
 
                 return (string) $origin->withPath(
                     (new Path($originFolder))
-                        ->pointingTo(new RelativePath((string) $destination)),
-                    $this->parser
+                        ->pointingTo(new RelativePath((string) $destination))
                 );
         }
 
@@ -101,19 +89,13 @@ final class UrlResolver implements ResolverInterface
     public function folder(string $url): string
     {
         $this->validateUrl($url);
-        $parsed = $this->parser->parseUrl($url);
-        $path = new Path($parsed->path);
+        $parsed = Structure::fromString($url);
+        $path = new Path((string) $parsed->path());
 
-        return (string) new ParsedUrl(
-            $parsed->scheme,
-            $parsed->user,
-            $parsed->pass,
-            $parsed->host,
-            $parsed->port,
-            (string) $path->folder(),
-            '',
-            ''
-        );
+        return (string) $parsed
+            ->withPath(new UrlPath((string) $path->folder()))
+            ->withQuery(new NullQuery)
+            ->withFragment(new NullFragment);
     }
 
     /**
@@ -122,9 +104,10 @@ final class UrlResolver implements ResolverInterface
     public function isFolder(string $url): bool
     {
         $this->validateUrl($url);
-        $parsed = $this->parser->parseUrl($url);
+        $parsed = Structure::fromString($url);
+        $path = new Path((string) $parsed->path());
 
-        return (new Path($parsed->path))->isFolder();
+        return $path->isFolder();
     }
 
     /**
@@ -133,18 +116,10 @@ final class UrlResolver implements ResolverInterface
     public function file(string $url): string
     {
         $this->validateUrl($url);
-        $parsed = $this->parser->parseUrl($url);
+        $parsed = Structure::fromString($url);
+        $path = new Path((string) $parsed->path());
 
-        return (string) new ParsedUrl(
-            $parsed->scheme,
-            $parsed->user,
-            $parsed->pass,
-            $parsed->host,
-            $parsed->port,
-            $parsed->path,
-            $parsed->query,
-            ''
-        );
+        return (string) $parsed->withFragment(new NullFragment);
     }
 
     /**
