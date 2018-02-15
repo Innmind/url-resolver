@@ -117,7 +117,6 @@ final class UrlResolver implements ResolverInterface
     {
         $this->validateUrl($url);
         $parsed = Structure::fromString($url);
-        $path = new Path((string) $parsed->path());
 
         return (string) $parsed->withFragment(new NullFragment);
     }
