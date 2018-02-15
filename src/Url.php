@@ -3,11 +3,15 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\Immutable\Str;
-use Pdp\{
-    Parser,
-    Uri\Url as ParsedUrl
+use Innmind\Url\{
+    Url as Structure,
+    Query,
+    Fragment as Frag,
+    Path as UrlPath,
+    NullFragment,
+    NullQuery
 };
+use Innmind\Immutable\Str;
 
 final class Url extends Str
 {
@@ -32,25 +36,19 @@ final class Url extends Str
      * Return a new url with the given query string
      *
      * @param QueryString $query
-     * @param Parser $parser Helper used to replace the query string
      *
      * @return self
      */
-    public function withQueryString(QueryString $query, Parser $parser): self
+    public function withQueryString(QueryString $query): self
     {
-        $parsed = $parser->parseUrl((string) $this);
+        $url = Structure::fromString((string) $this)
+            ->withQuery(
+                Query::fromString((string) $query->substring(1))
+            )
+            ->withFragment(new NullFragment);
 
         return new self(
-            (string) new ParsedUrl(
-                $parsed->scheme,
-                $parsed->user,
-                $parsed->pass,
-                $parsed->host,
-                $parsed->port,
-                $parsed->path,
-                (string) $query->substring(1),
-                ''
-            )
+            (string) $url
         );
     }
 
@@ -58,25 +56,17 @@ final class Url extends Str
      * Return a new url with the given fragment
      *
      * @param Fragment $fragment
-     * @param Parser $parser Helper used to replace the fragment
      *
      * @return self
      */
-    public function withFragment(Fragment $fragment, Parser $parser): self
+    public function withFragment(Fragment $fragment): self
     {
-        $parsed = $parser->parseUrl((string) $this);
+        $url = Structure::fromString((string) $this)->withFragment(
+            new Frag((string) $fragment->substring(1))
+        );
 
         return new self(
-            (string) new ParsedUrl(
-                $parsed->scheme,
-                $parsed->user,
-                $parsed->pass,
-                $parsed->host,
-                $parsed->port,
-                $parsed->path,
-                $parsed->query,
-                (string) $fragment->substring(1)
-            )
+            (string) $url
         );
     }
 
@@ -84,25 +74,20 @@ final class Url extends Str
      * Return a new url with the given path
      *
      * @param Path $path
-     * @param Parser $parser Helper used to replace the path
      *
      * @return self
      */
-    public function withPath(Path $path, Parser $parser): self
+    public function withPath(Path $path): self
     {
-        $parsed = $parser->parseUrl((string) $this);
+        $url = Structure::fromString((string) $this)
+            ->withPath(
+                new UrlPath((string) $path)
+            )
+            ->withQuery(new NullQuery)
+            ->withFragment(new NullFragment);
 
         return new self(
-            (string) new ParsedUrl(
-                $parsed->scheme,
-                $parsed->user,
-                $parsed->pass,
-                $parsed->host,
-                $parsed->port,
-                (string) $path,
-                '',
-                ''
-            )
+            (string) $url
         );
     }
 }

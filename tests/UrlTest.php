@@ -10,10 +10,6 @@ use Innmind\UrlResolver\{
     Fragment,
     Path
 };
-use Pdp\{
-    Parser,
-    PublicSuffixListManager
-};
 use PHPUnit\Framework\TestCase;
 
 class UrlTest extends TestCase
@@ -40,8 +36,7 @@ class UrlTest extends TestCase
         $u = new Url('http://localhost:8080/foo/?foo=bar');
 
         $u2 = $u->withQueryString(
-            new QueryString('?bar=baz'),
-            new Parser((new PublicSuffixListManager)->getList())
+            new QueryString('?bar=baz')
         );
         $this->assertNotSame($u, $u2);
         $this->assertSame('http://localhost:8080/foo/?foo=bar', (string) $u);
@@ -53,8 +48,7 @@ class UrlTest extends TestCase
         $u = new Url('http://localhost:8080/foo/?foo=bar#baz');
 
         $u2 = $u->withFragment(
-            new Fragment('#bar'),
-            new Parser((new PublicSuffixListManager)->getList())
+            new Fragment('#bar')
         );
         $this->assertNotSame($u, $u2);
         $this->assertSame('http://localhost:8080/foo/?foo=bar#baz', (string) $u);
@@ -66,8 +60,7 @@ class UrlTest extends TestCase
         $u = new Url('http://localhost:8080/foo/?foo=bar#baz');
 
         $u2 = $u->withPath(
-            new Path('/path/to/content'),
-            new Parser((new PublicSuffixListManager)->getList())
+            new Path('/path/to/content')
         );
         $this->assertNotSame($u, $u2);
         $this->assertSame('http://localhost:8080/foo/?foo=bar#baz', (string) $u);
