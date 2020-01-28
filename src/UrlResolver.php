@@ -5,11 +5,12 @@ namespace Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Exception\DestinationUrlCannotBeResolved,
-    Exception\OriginIsNotAValidUrl,
     Exception\DomainException,
 };
 use Innmind\Url\{
     Url,
+    Authority,
+    Scheme as UrlScheme,
     Path as UrlPath,
 };
 
@@ -23,19 +24,20 @@ final class UrlResolver implements Resolver
         $this->schemes = $schemes;
     }
 
-    public function __invoke(string $origin, string $destination): Url
+    public function __invoke(Url $origin, Url $destination): Url
     {
-        $destination = $this->createUrl($destination);
+        if ($destination->authority()->toString() !== Authority::none()->toString()) {
+            if ($destination->scheme()->toString() === UrlScheme::none()->toString()) {
+                $destination = $destination->withScheme(
+                    UrlScheme::of($this->schemes[0] ?? 'http'),
+                );
+            }
 
-        if ($destination->valid(...$this->schemes)) {
-            return $destination->toUrl();
+            return $destination;
         }
 
-        $origin = $this->createUrl($origin);
-
-        if (!$origin->valid(...$this->schemes)) {
-            throw new OriginIsNotAValidUrl($origin->toString());
-        }
+        $destination = $this->createUrl($destination->toString());
+        $origin = $this->createUrl($origin->toString());
 
         switch (true) {
             case $destination->queryString():

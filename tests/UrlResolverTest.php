@@ -30,21 +30,13 @@ class UrlResolverTest extends TestCase
      */
     public function testResolve(string $source, string $destination, string $expected)
     {
-        $resolved = ($this->resolve)($source, $destination);
+        $resolved = ($this->resolve)(
+            Url::of($source),
+            Url::of($destination),
+        );
 
         $this->assertInstanceOf(Url::class, $resolved);
         $this->assertSame($expected, $resolved->toString());
-    }
-
-    public function testThrowIfOriginIsNotAUrl()
-    {
-        $this->expectException(OriginIsNotAValidUrl::class);
-        $this->expectExceptionMessage('http://');
-
-        ($this->resolve)(
-            '//',
-            'bar'
-        );
     }
 
     public function cases(): array
