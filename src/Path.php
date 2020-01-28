@@ -12,7 +12,7 @@ final class Path
 
     public function __construct(string $value)
     {
-        if (!(new Url($value))->absolutePath()) {
+        if (!(new UrlRepresentation($value))->absolutePath()) {
             throw new DomainException($value);
         }
 

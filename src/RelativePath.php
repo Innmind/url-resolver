@@ -12,7 +12,7 @@ final class RelativePath
 
     public function __construct(string $value)
     {
-        if (!(new Url($value))->relativePath()) {
+        if (!(new UrlRepresentation($value))->relativePath()) {
             throw new DomainException($value);
         }
 

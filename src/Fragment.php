@@ -12,7 +12,7 @@ final class Fragment
 
     public function __construct(string $value)
     {
-        if (!(new Url($value))->fragment()) {
+        if (!(new UrlRepresentation($value))->fragment()) {
             throw new DomainException($value);
         }
 

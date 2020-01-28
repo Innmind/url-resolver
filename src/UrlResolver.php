@@ -9,7 +9,7 @@ use Innmind\UrlResolver\{
     Exception\DomainException,
 };
 use Innmind\Url\{
-    Url as Structure,
+    Url,
     Path as UrlPath,
 };
 
@@ -23,12 +23,12 @@ final class UrlResolver implements Resolver
         $this->schemes = $schemes;
     }
 
-    public function __invoke(string $origin, string $destination): Structure
+    public function __invoke(string $origin, string $destination): Url
     {
         $destination = $this->createUrl($destination);
 
         if ($destination->valid(...$this->schemes)) {
-            return $destination->toStructure();
+            return $destination->toUrl();
         }
 
         $origin = $this->createUrl($origin);
@@ -41,25 +41,25 @@ final class UrlResolver implements Resolver
             case $destination->queryString():
                 return $origin->withQueryString(
                     new QueryString($destination->toString()),
-                )->toStructure();
+                )->toUrl();
 
             case $destination->fragment():
                 return $origin->withFragment(
                     new Fragment($destination->toString()),
-                )->toStructure();
+                )->toUrl();
 
             case $destination->absolutePath():
                 return $origin->withPath(
                     new Path($destination->toString()),
-                )->toStructure();
+                )->toUrl();
 
             case $destination->relativePath():
-                $originFolder = Structure::of($origin->toString())->path()->toString();
+                $originFolder = Url::of($origin->toString())->path()->toString();
 
                 return $origin->withPath(
                     (new Path($originFolder))
                         ->pointingTo(new RelativePath($destination->toString())),
-                )->toStructure();
+                )->toUrl();
         }
 
         throw new DestinationUrlCannotBeResolved($destination->toString());
@@ -72,7 +72,7 @@ final class UrlResolver implements Resolver
      */
     private function validateUrl(string $url): void
     {
-        if (!(new Url($url))->valid(...$this->schemes)) {
+        if (!(new UrlRepresentation($url))->valid(...$this->schemes)) {
             throw new DomainException($url);
         }
     }
@@ -80,9 +80,9 @@ final class UrlResolver implements Resolver
     /**
      * Create a Url object from the given string
      */
-    private function createUrl(string $url): Url
+    private function createUrl(string $url): UrlRepresentation
     {
-        $url = new Url($url);
+        $url = new UrlRepresentation($url);
 
         if ($url->schemeLess()) {
             $url = $url->appendScheme(

@@ -12,7 +12,7 @@ final class QueryString
 
     public function __construct(string $value)
     {
-        if (!(new Url($value))->queryString()) {
+        if (!(new UrlRepresentation($value))->queryString()) {
             throw new DomainException($value);
         }
 

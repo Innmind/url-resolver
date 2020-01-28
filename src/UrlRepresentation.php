@@ -4,14 +4,14 @@ declare(strict_types = 1);
 namespace Innmind\UrlResolver;
 
 use Innmind\Url\{
-    Url as Structure,
+    Url,
     Query,
     Fragment as Frag,
     Path as UrlPath,
 };
 use Innmind\Immutable\Str;
 
-final class Url
+final class UrlRepresentation
 {
     /**
      * Pattern taken from symfony/validator
@@ -63,7 +63,7 @@ final class Url
      */
     public function withQueryString(QueryString $query): self
     {
-        $url = $this->toStructure()
+        $url = $this->toUrl()
             ->withQuery(
                 Query::of($query->withoutQuestionMark()),
             )
@@ -77,7 +77,7 @@ final class Url
      */
     public function withFragment(Fragment $fragment): self
     {
-        $url = $this->toStructure()->withFragment(
+        $url = $this->toUrl()->withFragment(
             Frag::of($fragment->withoutHash()),
         );
 
@@ -89,7 +89,7 @@ final class Url
      */
     public function withPath(Path $path): self
     {
-        $url = $this->toStructure()
+        $url = $this->toUrl()
             ->withPath(
                 UrlPath::of($path->toString()),
             )
@@ -154,8 +154,8 @@ final class Url
         return $this->string->toString();
     }
 
-    public function toStructure(): Structure
+    public function toUrl(): Url
     {
-        return Structure::of($this->toString());
+        return Url::of($this->toString());
     }
 }
