@@ -26,8 +26,8 @@ final class UrlResolver implements Resolver
 
     public function __invoke(Url $origin, Url $destination): Url
     {
-        if ($destination->authority()->toString() !== Authority::none()->toString()) {
-            if ($destination->scheme()->toString() === UrlScheme::none()->toString()) {
+        if (!$destination->authority()->equals(Authority::none())) {
+            if ($destination->scheme()->equals(UrlScheme::none())) {
                 $destination = $destination->withScheme(
                     UrlScheme::of($this->schemes[0] ?? 'http'),
                 );

@@ -17,7 +17,7 @@
     "require": {
         "php": "~7.4",
         "innmind/immutable": "~3.0",
-        "innmind/url": "~3.0"
+        "innmind/url": "~3.3"
     },
     "autoload": {
         "psr-4": {
