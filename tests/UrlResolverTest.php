@@ -163,32 +163,4 @@ class UrlResolverTest extends TestCase
             $this->resolver->folder('http://xn--example.com/foo/?foo=bar')
         );
     }
-
-    public function testFile()
-    {
-        $this->assertSame(
-            'http://xn--example.com/foo',
-            $this->resolver->file('http://xn--example.com/foo')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo?query=string',
-            $this->resolver->file('http://xn--example.com/foo?query=string')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo',
-            $this->resolver->file('http://xn--example.com/foo#fragment')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/',
-            $this->resolver->file('http://xn--example.com/foo/')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/?foo',
-            $this->resolver->file('http://xn--example.com/foo/?foo')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/',
-            $this->resolver->file('http://xn--example.com/foo/#fragment')
-        );
-    }
 }

@@ -19,16 +19,4 @@ interface Resolver
      * Return the folder's path of the given url
      */
     public function folder(string $url): string;
-
-
-    /**
-     * Return the file's path for the given url
-     *
-     * Examples:
-     *     * http://foo/bar/baz => http://foo/bar/baz
-     *     * http://foo/bar/baz#fragment => http://foo/bar/baz
-     *     * http://foo/bar/baz?query=string => http://foo/bar/baz?query=string
-     *     * http://foo/bar/ => http://foo/bar/
-     */
-    public function file(string $url): string;
 }

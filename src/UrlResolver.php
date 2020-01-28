@@ -78,14 +78,6 @@ final class UrlResolver implements Resolver
             ->toString();
     }
 
-    public function file(string $url): string
-    {
-        $this->validateUrl($url);
-        $parsed = Structure::of($url);
-
-        return $parsed->withoutFragment()->toString();
-    }
-
     /**
      * Check if the given url is indeed one
      *
