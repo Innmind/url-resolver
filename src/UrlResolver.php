@@ -78,15 +78,6 @@ final class UrlResolver implements Resolver
             ->toString();
     }
 
-    public function isFolder(string $url): bool
-    {
-        $this->validateUrl($url);
-        $parsed = Structure::of($url);
-        $path = new Path($parsed->path()->toString());
-
-        return $path->isFolder();
-    }
-
     public function file(string $url): string
     {
         $this->validateUrl($url);

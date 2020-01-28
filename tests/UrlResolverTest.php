@@ -164,16 +164,6 @@ class UrlResolverTest extends TestCase
         );
     }
 
-    public function testIsFolder()
-    {
-        $this->assertTrue($this->resolver->isFolder('http://xn--example.com/'));
-        $this->assertTrue($this->resolver->isFolder('http://xn--example.com/foo/'));
-        $this->assertTrue($this->resolver->isFolder('http://xn--example.com/foo/'));
-        $this->assertTrue($this->resolver->isFolder('http://xn--example.com/foo/?foo=bar'));
-        $this->assertFalse($this->resolver->isFolder('http://xn--example.com/foo'));
-        $this->assertFalse($this->resolver->isFolder('http://xn--example.com/foo#/'));
-    }
-
     public function testFile()
     {
         $this->assertSame(

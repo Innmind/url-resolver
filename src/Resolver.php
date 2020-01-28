@@ -31,9 +31,4 @@ interface Resolver
      *     * http://foo/bar/ => http://foo/bar/
      */
     public function file(string $url): string;
-
-    /**
-     * Check if the url point to a folder
-     */
-    public function isFolder(string $url): bool;
 }
