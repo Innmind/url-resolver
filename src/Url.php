@@ -8,8 +8,6 @@ use Innmind\Url\{
     Query,
     Fragment as Frag,
     Path as UrlPath,
-    NullFragment,
-    NullQuery,
 };
 use Innmind\Immutable\Str;
 
@@ -57,10 +55,10 @@ final class Url
     public function appendScheme(Scheme $scheme): self
     {
         return new self(
-            (string) $this->string->pregReplace(
+            $this->string->pregReplace(
                 '/^[a-zA-Z]*:?\/\//',
                 $scheme->toString() . '://',
-            ),
+            )->toString(),
         );
     }
 
@@ -73,15 +71,13 @@ final class Url
      */
     public function withQueryString(QueryString $query): self
     {
-        $url = Structure::fromString($this->toString())
+        $url = Structure::of($this->toString())
             ->withQuery(
-                Query::fromString($query->withoutQuestionMark()),
+                Query::of($query->withoutQuestionMark()),
             )
-            ->withFragment(new NullFragment);
+            ->withoutFragment();
 
-        return new self(
-            (string) $url,
-        );
+        return new self($url->toString());
     }
 
     /**
@@ -93,13 +89,11 @@ final class Url
      */
     public function withFragment(Fragment $fragment): self
     {
-        $url = Structure::fromString($this->toString())->withFragment(
-            new Frag($fragment->withoutHash()),
+        $url = Structure::of($this->toString())->withFragment(
+            Frag::of($fragment->withoutHash()),
         );
 
-        return new self(
-            (string) $url,
-        );
+        return new self($url->toString());
     }
 
     /**
@@ -111,21 +105,19 @@ final class Url
      */
     public function withPath(Path $path): self
     {
-        $url = Structure::fromString($this->toString())
+        $url = Structure::of($this->toString())
             ->withPath(
-                new UrlPath($path->toString()),
+                UrlPath::of($path->toString()),
             )
-            ->withQuery(new NullQuery)
-            ->withFragment(new NullFragment);
+            ->withoutQuery()
+            ->withoutFragment();
 
-        return new self(
-            (string) $url,
-        );
+        return new self($url->toString());
     }
 
     public function schemeLess(): bool
     {
-        if ((string) $this->string->substring(0, 2) === '//') {
+        if ($this->string->startsWith('//')) {
             return true;
         }
 
@@ -147,11 +139,11 @@ final class Url
 
     public function relativePath(): bool
     {
-        if ((string) $this->string->substring(0, 2) === './') {
+        if ($this->string->startsWith('./')) {
             return true;
         }
 
-        if ((string) $this->string->substring(0, 3) === '../') {
+        if ($this->string->startsWith('../')) {
             return true;
         }
 
@@ -160,21 +152,21 @@ final class Url
 
     public function queryString(): bool
     {
-        return (string) $this->string->substring(0, 1) === '?';
+        return $this->string->startsWith('?');
     }
 
     public function absolutePath(): bool
     {
-        return (string) $this->string->substring(0, 1) === '/';
+        return $this->string->startsWith('/');
     }
 
     public function fragment(): bool
     {
-        return (string) $this->string->substring(0, 1) === '#';
+        return $this->string->startsWith('#');
     }
 
     public function toString(): string
     {
-        return (string) $this->string;
+        return $this->string->toString();
     }
 }

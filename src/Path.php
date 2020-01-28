@@ -67,7 +67,7 @@ final class Path
      */
     public function isFolder()
     {
-        return (string) $this->clean()->string->substring(-1) === '/';
+        return $this->clean()->string->endsWith('/');
     }
 
     /**
@@ -78,12 +78,12 @@ final class Path
     public function clean(): self
     {
         return new self(
-            (string) $this->string->pregReplace('(\?.*|#.*)', ''),
+            $this->string->pregReplace('(\?.*|#.*)', '')->toString(),
         );
     }
 
     public function toString(): string
     {
-        return (string) $this->string;
+        return $this->string->toString();
     }
 }

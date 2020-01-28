@@ -21,11 +21,11 @@ final class Fragment
 
     public function withoutHash(): string
     {
-        return (string) $this->string->substring(1);
+        return $this->string->substring(1)->toString();
     }
 
     public function toString(): string
     {
-        return (string) $this->string;
+        return $this->string->toString();
     }
 }

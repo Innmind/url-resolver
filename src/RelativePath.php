@@ -26,7 +26,7 @@ final class RelativePath
 
     public function removeSelfReference(): self
     {
-        return new self((string) $this->string->substring(2));
+        return new self($this->string->substring(2)->toString());
     }
 
     public function startsWithParentFolderReference(): bool
@@ -36,11 +36,11 @@ final class RelativePath
 
     public function removeParentFolderReference(): self
     {
-        return new self((string) $this->string->substring(3));
+        return new self($this->string->substring(3)->toString());
     }
 
     public function toString(): string
     {
-        return (string) $this->string;
+        return $this->string->toString();
     }
 }

@@ -10,8 +10,6 @@ use Innmind\UrlResolver\{
 use Innmind\Url\{
     Url as Structure,
     Path as UrlPath,
-    NullQuery,
-    NullFragment,
 };
 
 final class UrlResolver implements Resolver
@@ -57,7 +55,7 @@ final class UrlResolver implements Resolver
                 )->toString();
 
             case $destination->relativePath():
-                $originFolder = (string) Structure::fromString($origin->toString())->path();
+                $originFolder = Structure::of($origin->toString())->path()->toString();
 
                 return $origin->withPath(
                     (new Path($originFolder))
@@ -74,13 +72,14 @@ final class UrlResolver implements Resolver
     public function folder(string $url): string
     {
         $this->validateUrl($url);
-        $parsed = Structure::fromString($url);
-        $path = new Path((string) $parsed->path());
+        $parsed = Structure::of($url);
+        $path = new Path($parsed->path()->toString());
 
-        return (string) $parsed
-            ->withPath(new UrlPath($path->folder()->toString()))
-            ->withQuery(new NullQuery)
-            ->withFragment(new NullFragment);
+        return $parsed
+            ->withPath(UrlPath::of($path->folder()->toString()))
+            ->withoutQuery()
+            ->withoutFragment()
+            ->toString();
     }
 
     /**
@@ -89,8 +88,8 @@ final class UrlResolver implements Resolver
     public function isFolder(string $url): bool
     {
         $this->validateUrl($url);
-        $parsed = Structure::fromString($url);
-        $path = new Path((string) $parsed->path());
+        $parsed = Structure::of($url);
+        $path = new Path($parsed->path()->toString());
 
         return $path->isFolder();
     }
@@ -101,9 +100,9 @@ final class UrlResolver implements Resolver
     public function file(string $url): string
     {
         $this->validateUrl($url);
-        $parsed = Structure::fromString($url);
+        $parsed = Structure::of($url);
 
-        return (string) $parsed->withFragment(new NullFragment);
+        return $parsed->withoutFragment()->toString();
     }
 
     /**

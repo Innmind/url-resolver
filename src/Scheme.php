@@ -21,6 +21,6 @@ final class Scheme
 
     public function toString(): string
     {
-        return (string) $this->string;
+        return $this->string->toString();
     }
 }
