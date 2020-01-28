@@ -39,38 +39,38 @@ final class UrlResolver implements Resolver
         $destination = $this->createUrl($destination);
 
         if ($this->urlSpecification->isSatisfiedBy($destination)) {
-            return (string) $destination;
+            return $destination->toString();
         }
 
         $origin = $this->createUrl($origin);
 
         if (!$this->urlSpecification->isSatisfiedBy($origin)) {
-            throw new OriginIsNotAValidUrl((string) $origin);
+            throw new OriginIsNotAValidUrl($origin->toString());
         }
 
         switch (true) {
             case (new QueryStringSpecification)->isSatisfiedBy($destination):
-                return (string) $origin->withQueryString(
-                    new QueryString((string) $destination)
-                );
+                return $origin->withQueryString(
+                    new QueryString($destination->toString()),
+                )->toString();
 
             case (new FragmentSpecification)->isSatisfiedBy($destination):
-                return (string) $origin->withFragment(
-                    new Fragment((string) $destination)
-                );
+                return $origin->withFragment(
+                    new Fragment($destination->toString()),
+                )->toString();
 
             case (new AbsolutePath)->isSatisfiedBy($destination):
-                return (string) $origin->withPath(
-                    new Path((string) $destination)
-                );
+                return $origin->withPath(
+                    new Path($destination->toString()),
+                )->toString();
 
             case (new RelativePathSpecification)->isSatisfiedBy($destination):
-                $originFolder = (string) Structure::fromString((string) $origin)->path();
+                $originFolder = (string) Structure::fromString($origin->toString())->path();
 
-                return (string) $origin->withPath(
+                return $origin->withPath(
                     (new Path($originFolder))
-                        ->pointingTo(new RelativePath((string) $destination))
-                );
+                        ->pointingTo(new RelativePath($destination->toString())),
+                )->toString();
         }
 
         throw new DestinationUrlCannotBeResolved((string) $destination);
@@ -86,7 +86,7 @@ final class UrlResolver implements Resolver
         $path = new Path((string) $parsed->path());
 
         return (string) $parsed
-            ->withPath(new UrlPath((string) $path->folder()))
+            ->withPath(new UrlPath($path->folder()->toString()))
             ->withQuery(new NullQuery)
             ->withFragment(new NullFragment);
     }

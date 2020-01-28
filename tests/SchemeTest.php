@@ -13,10 +13,10 @@ class SchemeTest extends TestCase
 {
     public function testValidScheme()
     {
-        $this->assertSame('http', (string) new Scheme('http'));
-        $this->assertSame('https', (string) new Scheme('https'));
-        $this->assertSame('ftp', (string) new Scheme('ftp'));
-        $this->assertSame('unknown', (string) new Scheme('unknown'));
+        $this->assertSame('http', (new Scheme('http'))->toString());
+        $this->assertSame('https', (new Scheme('https'))->toString());
+        $this->assertSame('ftp', (new Scheme('ftp'))->toString());
+        $this->assertSame('unknown', (new Scheme('unknown'))->toString());
     }
 
     public function testThrowWhenInvalidScheme()

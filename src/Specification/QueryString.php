@@ -16,6 +16,6 @@ class QueryString
      */
     public function isSatisfiedBy(UrlModel $url): bool
     {
-        return (string) $url->substring(0, 1) === '?';
+        return $url->queryString();
     }
 }

@@ -20,15 +20,15 @@ class UrlTest extends TestCase
 
         $url2 = $url->appendScheme(new Scheme('http'));
         $this->assertNotSame($url, $url2);
-        $this->assertSame('//localhost', (string) $url);
-        $this->assertSame('http://localhost', (string) $url2);
+        $this->assertSame('//localhost', $url->toString());
+        $this->assertSame('http://localhost', $url2->toString());
 
         $url = new Url('https://localhost');
 
         $url2 = $url->appendScheme(new Scheme('http'));
         $this->assertNotSame($url, $url2);
-        $this->assertSame('https://localhost', (string) $url);
-        $this->assertSame('http://localhost', (string) $url2);
+        $this->assertSame('https://localhost', $url->toString());
+        $this->assertSame('http://localhost', $url2->toString());
     }
 
     public function testWithQueryString()
@@ -39,8 +39,8 @@ class UrlTest extends TestCase
             new QueryString('?bar=baz')
         );
         $this->assertNotSame($u, $u2);
-        $this->assertSame('http://localhost:8080/foo/?foo=bar', (string) $u);
-        $this->assertSame('http://localhost:8080/foo/?bar=baz', (string) $u2);
+        $this->assertSame('http://localhost:8080/foo/?foo=bar', $u->toString());
+        $this->assertSame('http://localhost:8080/foo/?bar=baz', $u2->toString());
     }
 
     public function testWithFragment()
@@ -51,8 +51,8 @@ class UrlTest extends TestCase
             new Fragment('#bar')
         );
         $this->assertNotSame($u, $u2);
-        $this->assertSame('http://localhost:8080/foo/?foo=bar#baz', (string) $u);
-        $this->assertSame('http://localhost:8080/foo/?foo=bar#bar', (string) $u2);
+        $this->assertSame('http://localhost:8080/foo/?foo=bar#baz', $u->toString());
+        $this->assertSame('http://localhost:8080/foo/?foo=bar#bar', $u2->toString());
     }
 
     public function testWithPath()
@@ -63,7 +63,7 @@ class UrlTest extends TestCase
             new Path('/path/to/content')
         );
         $this->assertNotSame($u, $u2);
-        $this->assertSame('http://localhost:8080/foo/?foo=bar#baz', (string) $u);
-        $this->assertSame('http://localhost:8080/path/to/content', (string) $u2);
+        $this->assertSame('http://localhost:8080/foo/?foo=bar#baz', $u->toString());
+        $this->assertSame('http://localhost:8080/path/to/content', $u2->toString());
     }
 }

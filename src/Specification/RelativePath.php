@@ -16,14 +16,6 @@ class RelativePath
      */
     public function isSatisfiedBy(UrlModel $url): bool
     {
-        if ((string) $url->substring(0, 2) === './') {
-            return true;
-        }
-
-        if ((string) $url->substring(0, 3) === '../') {
-            return true;
-        }
-
-        return !$url->matches('/^(\/|\?|#)/');
+        return $url->relativePath();
     }
 }

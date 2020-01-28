@@ -9,14 +9,41 @@ use Innmind\UrlResolver\{
 };
 use Innmind\Immutable\Str;
 
-class RelativePath extends Str
+final class RelativePath
 {
+    private Str $string;
+
     public function __construct(string $value)
     {
         if (!(new RelativePathSpecification)->isSatisfiedBy(new Url($value))) {
             throw new DomainException($value);
         }
 
-        parent::__construct($value);
+        $this->string = Str::of($value);
+    }
+
+    public function startsWithSelfReference(): bool
+    {
+        return $this->string->startsWith('./');
+    }
+
+    public function removeSelfReference(): self
+    {
+        return new self((string) $this->string->substring(2));
+    }
+
+    public function startsWithParentFolderReference(): bool
+    {
+        return $this->string->startsWith('../');
+    }
+
+    public function removeParentFolderReference(): self
+    {
+        return new self((string) $this->string->substring(3));
+    }
+
+    public function toString(): string
+    {
+        return (string) $this->string;
     }
 }

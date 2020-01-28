@@ -13,7 +13,7 @@ class FragmentTest extends TestCase
 {
     public function testNotThrowWhenBuilding()
     {
-        $this->assertSame('#fragment', (string) new Fragment('#fragment'));
+        $this->assertSame('#fragment', (new Fragment('#fragment'))->toString());
     }
 
     public function testThrowWhenInvalidValue()

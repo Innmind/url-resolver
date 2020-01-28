@@ -15,15 +15,15 @@ class QueryStringTest extends TestCase
     {
         $this->assertSame(
             '?foo',
-            (string) new QueryString('?foo')
+            (new QueryString('?foo'))->toString(),
         );
         $this->assertSame(
             '?foo=bar',
-            (string) new QueryString('?foo=bar')
+            (new QueryString('?foo=bar'))->toString(),
         );
         $this->assertSame(
             '?foo=bar#fragment',
-            (string) new QueryString('?foo=bar#fragment')
+            (new QueryString('?foo=bar#fragment'))->toString(),
         );
     }
 

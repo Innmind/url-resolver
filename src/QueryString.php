@@ -9,14 +9,26 @@ use Innmind\UrlResolver\{
 };
 use Innmind\Immutable\Str;
 
-class QueryString extends Str
+final class QueryString
 {
+    private Str $string;
+
     public function __construct(string $value)
     {
         if (!(new QueryStringSpecification)->isSatisfiedBy(new Url($value))) {
             throw new DomainException($value);
         }
 
-        parent::__construct($value);
+        $this->string = Str::of($value);
+    }
+
+    public function withoutQuestionMark(): string
+    {
+        return (string) $this->string->substring(1);
+    }
+
+    public function toString(): string
+    {
+        return (string) $this->string;
     }
 }

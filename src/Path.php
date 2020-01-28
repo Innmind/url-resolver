@@ -9,15 +9,17 @@ use Innmind\UrlResolver\{
 };
 use Innmind\Immutable\Str;
 
-class Path extends Str
+final class Path
 {
+    private Str $string;
+
     public function __construct(string $value)
     {
         if (!(new AbsolutePath)->isSatisfiedBy(new Url($value))) {
             throw new DomainException($value);
         }
 
-        parent::__construct($value);
+        $this->string = Str::of($value);
     }
 
     /**
@@ -35,16 +37,16 @@ class Path extends Str
             $folder = $this->folder();
         }
 
-        if ((string) $path->substring(0, 2) === './') {
-            $path = $path->substring(2);
+        if ($path->startsWithSelfReference()) {
+            $path = $path->removeSelfReference();
         }
 
-        if ((string) $path->substring(0, 3) === '../') {
-            $path = $path->substring(3);
+        if ($path->startsWithParentFolderReference()) {
+            $path = $path->removeParentFolderReference();
             $folder = $folder->folder();
         }
 
-        return new self((string) $folder . (string) $path);
+        return new self($folder->toString() . $path->toString());
     }
 
     /**
@@ -54,7 +56,7 @@ class Path extends Str
      */
     public function folder(): self
     {
-        $folder = dirname((string) $this);
+        $folder = dirname($this->toString());
 
         return new self(
             $folder === '/' ? '/' : $folder . '/'
@@ -68,7 +70,7 @@ class Path extends Str
      */
     public function isFolder()
     {
-        return (string) $this->clean()->substring(-1) === '/';
+        return (string) $this->clean()->string->substring(-1) === '/';
     }
 
     /**
@@ -79,7 +81,12 @@ class Path extends Str
     public function clean(): self
     {
         return new self(
-            (string) $this->pregReplace('(\?.*|#.*)', '')
+            (string) $this->string->pregReplace('(\?.*|#.*)', ''),
         );
+    }
+
+    public function toString(): string
+    {
+        return (string) $this->string;
     }
 }

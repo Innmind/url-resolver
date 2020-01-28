@@ -14,7 +14,7 @@ class PathTest extends TestCase
 {
     public function testValidPath()
     {
-        $this->assertSame('/path/to/content', (string) new Path('/path/to/content'));
+        $this->assertSame('/path/to/content', (new Path('/path/to/content'))->toString());
     }
 
     public function testThrowWhenInvalidPath()
@@ -40,14 +40,14 @@ class PathTest extends TestCase
         $p = new Path('/path/to/content/');
 
         $p2 = $p->folder();
-        $this->assertSame('/path/to/content/', (string) $p);
-        $this->assertSame('/path/to/', (string) $p2);
+        $this->assertSame('/path/to/content/', $p->toString());
+        $this->assertSame('/path/to/', $p2->toString());
 
         $p = new Path('/path/to/content');
 
         $p2 = $p->folder();
-        $this->assertSame('/path/to/content', (string) $p);
-        $this->assertSame('/path/to/', (string) $p2);
+        $this->assertSame('/path/to/content', $p->toString());
+        $this->assertSame('/path/to/', $p2->toString());
     }
 
     /**
@@ -58,23 +58,23 @@ class PathTest extends TestCase
         $p = new Path($origin);
 
         $p2 = $p->pointingTo(new RelativePath($dest));
-        $this->assertSame($origin, (string) $p);
-        $this->assertSame($expected, (string) $p2);
+        $this->assertSame($origin, $p->toString());
+        $this->assertSame($expected, $p2->toString());
     }
 
     public function testClean()
     {
         $this->assertSame(
             '/path/to/content/',
-            (string) (new Path('/path/to/content/'))->clean()
+            (new Path('/path/to/content/'))->clean()->toString(),
         );
         $this->assertSame(
             '/path/to/content/',
-            (string) (new Path('/path/to/content/?query=foo'))->clean()
+            (new Path('/path/to/content/?query=foo'))->clean()->toString(),
         );
         $this->assertSame(
             '/path/to/content/',
-            (string) (new Path('/path/to/content/#fragment'))->clean()
+            (new Path('/path/to/content/#fragment'))->clean()->toString(),
         );
     }
 

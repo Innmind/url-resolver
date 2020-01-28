@@ -16,10 +16,6 @@ class SchemeLess
      */
     public function isSatisfiedBy(UrlModel $url): bool
     {
-        if ((string) $url->substring(0, 2) === '//') {
-            return true;
-        }
-
-        return !$url->matches('/^[a-zA-Z]*:?\/\//');
+        return $url->schemeLess();
     }
 }

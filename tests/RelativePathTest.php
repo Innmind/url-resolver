@@ -15,27 +15,27 @@ class RelativePathTest extends TestCase
     {
         $this->assertSame(
             '../path/to/content',
-            (string) new RelativePath('../path/to/content')
+            (new RelativePath('../path/to/content'))->toString(),
         );
         $this->assertSame(
             './path/to/content',
-            (string) new RelativePath('./path/to/content')
+            (new RelativePath('./path/to/content'))->toString(),
         );
         $this->assertSame(
             'path/to/content',
-            (string) new RelativePath('path/to/content')
+            (new RelativePath('path/to/content'))->toString(),
         );
         $this->assertSame(
             '.path/to/content',
-            (string) new RelativePath('.path/to/content')
+            (new RelativePath('.path/to/content'))->toString(),
         );
         $this->assertSame(
             '!path/to/content',
-            (string) new RelativePath('!path/to/content')
+            (new RelativePath('!path/to/content'))->toString(),
         );
         $this->assertSame(
             '42path/to/content',
-            (string) new RelativePath('42path/to/content')
+            (new RelativePath('42path/to/content'))->toString(),
         );
     }
 
