@@ -23,9 +23,6 @@ final class UrlResolver implements Resolver
         $this->schemes = $schemes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function resolve(string $origin, string $destination): string
     {
         $destination = $this->createUrl($destination);
@@ -68,9 +65,6 @@ final class UrlResolver implements Resolver
         throw new DestinationUrlCannotBeResolved($destination->toString());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function folder(string $url): string
     {
         $this->validateUrl($url);
@@ -84,9 +78,6 @@ final class UrlResolver implements Resolver
             ->toString();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isFolder(string $url): bool
     {
         $this->validateUrl($url);
@@ -96,9 +87,6 @@ final class UrlResolver implements Resolver
         return $path->isFolder();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function file(string $url): string
     {
         $this->validateUrl($url);
@@ -110,13 +98,9 @@ final class UrlResolver implements Resolver
     /**
      * Check if the given url is indeed one
      *
-     * @param string $url
-     *
      * @throws DomainException If it's not one
-     *
-     * @return void
      */
-    private function validateUrl(string $url)
+    private function validateUrl(string $url): void
     {
         if (!(new Url($url))->valid(...$this->schemes)) {
             throw new DomainException($url);
@@ -125,10 +109,6 @@ final class UrlResolver implements Resolver
 
     /**
      * Create a Url object from the given string
-     *
-     * @param string $url
-     *
-     * @return Url
      */
     private function createUrl(string $url): Url
     {

@@ -21,10 +21,6 @@ final class Path
 
     /**
      * Resolve the wished directory
-     *
-     * @param RelativePath $path
-     *
-     * @return self
      */
     public function pointingTo(RelativePath $path): self
     {
@@ -48,8 +44,6 @@ final class Path
 
     /**
      * Return the folder for this path
-     *
-     * @return self
      */
     public function folder(): self
     {
@@ -62,18 +56,14 @@ final class Path
 
     /**
      * Chek if the path is a folder
-     *
-     * @return bool
      */
-    public function isFolder()
+    public function isFolder(): bool
     {
         return $this->clean()->string->endsWith('/');
     }
 
     /**
      * Return a path without any query string nor fragment
-     *
-     * @return self
      */
     public function clean(): self
     {

@@ -47,10 +47,6 @@ final class Url
 
     /**
      * Append the given scheme to the url
-     *
-     * @param Scheme $scheme
-     *
-     * @return self
      */
     public function appendScheme(Scheme $scheme): self
     {
@@ -64,10 +60,6 @@ final class Url
 
     /**
      * Return a new url with the given query string
-     *
-     * @param QueryString $query
-     *
-     * @return self
      */
     public function withQueryString(QueryString $query): self
     {
@@ -82,10 +74,6 @@ final class Url
 
     /**
      * Return a new url with the given fragment
-     *
-     * @param Fragment $fragment
-     *
-     * @return self
      */
     public function withFragment(Fragment $fragment): self
     {
@@ -98,10 +86,6 @@ final class Url
 
     /**
      * Return a new url with the given path
-     *
-     * @param Path $path
-     *
-     * @return self
      */
     public function withPath(Path $path): self
     {
