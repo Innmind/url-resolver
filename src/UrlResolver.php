@@ -6,6 +6,7 @@ namespace Innmind\UrlResolver;
 use Innmind\UrlResolver\{
     Exception\DestinationUrlCannotBeResolved,
     Exception\OriginIsNotAValidUrl,
+    Exception\DomainException,
 };
 use Innmind\Url\{
     Url as Structure,
@@ -14,9 +15,10 @@ use Innmind\Url\{
 
 final class UrlResolver implements Resolver
 {
+    /** @var list<string> */
     private array $schemes;
 
-    public function __construct(array $schemes = [])
+    public function __construct(string ...$schemes)
     {
         $this->schemes = $schemes;
     }
@@ -63,7 +65,7 @@ final class UrlResolver implements Resolver
                 )->toString();
         }
 
-        throw new DestinationUrlCannotBeResolved((string) $destination);
+        throw new DestinationUrlCannotBeResolved($destination->toString());
     }
 
     /**
@@ -110,17 +112,14 @@ final class UrlResolver implements Resolver
      *
      * @param string $url
      *
-     * @throws UrlException If it's not one
+     * @throws DomainException If it's not one
      *
      * @return void
      */
     private function validateUrl(string $url)
     {
         if (!(new Url($url))->valid(...$this->schemes)) {
-            throw new UrlException(sprintf(
-                'The string "%s" is not a valid url',
-                $url
-            ));
+            throw new DomainException($url);
         }
     }
 
