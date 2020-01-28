@@ -3,7 +3,10 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\UrlResolver;
 
-use Innmind\UrlResolver\Fragment;
+use Innmind\UrlResolver\{
+    Fragment,
+    Exception\InvalidArgumentException,
+};
 use PHPUnit\Framework\TestCase;
 
 class FragmentTest extends TestCase
@@ -13,12 +16,11 @@ class FragmentTest extends TestCase
         $this->assertSame('#fragment', (string) new Fragment('#fragment'));
     }
 
-    /**
-     * @expectedException Innmind\UrlResolver\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The value "?foo=bar" is not a valid fragment
-     */
     public function testThrowWhenInvalidValue()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "?foo=bar" is not a valid fragment');
+
         new Fragment('?foo=bar');
     }
 }

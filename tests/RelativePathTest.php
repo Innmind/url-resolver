@@ -3,7 +3,10 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\UrlResolver;
 
-use Innmind\UrlResolver\RelativePath;
+use Innmind\UrlResolver\{
+    RelativePath,
+    Exception\InvalidArgumentException,
+};
 use PHPUnit\Framework\TestCase;
 
 class RelativePathTest extends TestCase
@@ -36,12 +39,11 @@ class RelativePathTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException Innmind\UrlResolver\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The value "/relative/path" is not a valid relative path
-     */
     public function testThrowWhenInvalidRelativePath()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "/relative/path" is not a valid relative path');
+
         new RelativePath('/relative/path');
     }
 }

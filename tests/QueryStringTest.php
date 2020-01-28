@@ -3,7 +3,10 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\UrlResolver;
 
-use Innmind\UrlResolver\QueryString;
+use Innmind\UrlResolver\{
+    QueryString,
+    Exception\InvalidArgumentException,
+};
 use PHPUnit\Framework\TestCase;
 
 class QueryStringTest extends TestCase
@@ -24,12 +27,11 @@ class QueryStringTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException Innmind\UrlResolver\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The value "#fragment" is not a valid query string
-     */
     public function testThrowWhenInvalidValue()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "#fragment" is not a valid query string');
+
         new QueryString('#fragment');
     }
 }

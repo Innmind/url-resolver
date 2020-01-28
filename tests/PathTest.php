@@ -5,7 +5,8 @@ namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Path,
-    RelativePath
+    RelativePath,
+    Exception\InvalidArgumentException,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -16,12 +17,11 @@ class PathTest extends TestCase
         $this->assertSame('/path/to/content', (string) new Path('/path/to/content'));
     }
 
-    /**
-     * @expectedException Innmind\UrlResolver\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The value "../relative/path" is not a valid path
-     */
     public function testThrowWhenInvalidPath()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "../relative/path" is not a valid path');
+
         new Path('../relative/path');
     }
 

@@ -3,14 +3,17 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\UrlResolver;
 
-use Innmind\UrlResolver\UrlResolver;
+use Innmind\UrlResolver\{
+    UrlResolver,
+    Exception\UrlException,
+};
 use PHPUnit\Framework\TestCase;
 
 class UrlResolverTest extends TestCase
 {
     protected $resolver;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->resolver = new UrlResolver(['http', 'https']);
     }
@@ -124,12 +127,11 @@ class UrlResolverTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException Innmind\UrlResolver\Exception\UrlException
-     * @expectedExceptionMessage The origin variable is not a url (given: http://)
-     */
-    public function testThrowIfOriginIsNOtAUrl()
+    public function testThrowIfOriginIsNotAUrl()
     {
+        $this->expectException(UrlException::class);
+        $this->expectExceptionMessage('The origin variable is not a url (given: http://)');
+
         $this->resolver->resolve(
             '//',
             'bar'

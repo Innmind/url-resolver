@@ -3,7 +3,10 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\UrlResolver;
 
-use Innmind\UrlResolver\Scheme;
+use Innmind\UrlResolver\{
+    Scheme,
+    Exception\InvalidArgumentException,
+};
 use PHPUnit\Framework\TestCase;
 
 class SchemeTest extends TestCase
@@ -16,12 +19,11 @@ class SchemeTest extends TestCase
         $this->assertSame('unknown', (string) new Scheme('unknown'));
     }
 
-    /**
-     * @expectedException Innmind\UrlResolver\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The value "42" is not a valid scheme
-     */
     public function testThrowWhenInvalidScheme()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "42" is not a valid scheme');
+
         new Scheme('42');
     }
 }
