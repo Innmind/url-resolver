@@ -63,7 +63,7 @@ final class Url
      */
     public function withQueryString(QueryString $query): self
     {
-        $url = Structure::of($this->toString())
+        $url = $this->toStructure()
             ->withQuery(
                 Query::of($query->withoutQuestionMark()),
             )
@@ -77,7 +77,7 @@ final class Url
      */
     public function withFragment(Fragment $fragment): self
     {
-        $url = Structure::of($this->toString())->withFragment(
+        $url = $this->toStructure()->withFragment(
             Frag::of($fragment->withoutHash()),
         );
 
@@ -89,7 +89,7 @@ final class Url
      */
     public function withPath(Path $path): self
     {
-        $url = Structure::of($this->toString())
+        $url = $this->toStructure()
             ->withPath(
                 UrlPath::of($path->toString()),
             )
@@ -152,5 +152,10 @@ final class Url
     public function toString(): string
     {
         return $this->string->toString();
+    }
+
+    public function toStructure(): Structure
+    {
+        return Structure::of($this->toString());
     }
 }

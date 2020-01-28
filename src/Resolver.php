@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
+use Innmind\Url\Url;
+
 interface Resolver
 {
     /**
@@ -13,5 +15,5 @@ interface Resolver
      *     * http://foo/bar and http://bar/ => http://bar/
      *     * http://foo/bar and ?query=string => http://foo/bar?query=string
      */
-    public function __invoke(string $origin, string $destination): string;
+    public function __invoke(string $origin, string $destination): Url;
 }

@@ -23,12 +23,12 @@ final class UrlResolver implements Resolver
         $this->schemes = $schemes;
     }
 
-    public function __invoke(string $origin, string $destination): string
+    public function __invoke(string $origin, string $destination): Structure
     {
         $destination = $this->createUrl($destination);
 
         if ($destination->valid(...$this->schemes)) {
-            return $destination->toString();
+            return $destination->toStructure();
         }
 
         $origin = $this->createUrl($origin);
@@ -41,17 +41,17 @@ final class UrlResolver implements Resolver
             case $destination->queryString():
                 return $origin->withQueryString(
                     new QueryString($destination->toString()),
-                )->toString();
+                )->toStructure();
 
             case $destination->fragment():
                 return $origin->withFragment(
                     new Fragment($destination->toString()),
-                )->toString();
+                )->toStructure();
 
             case $destination->absolutePath():
                 return $origin->withPath(
                     new Path($destination->toString()),
-                )->toString();
+                )->toStructure();
 
             case $destination->relativePath():
                 $originFolder = Structure::of($origin->toString())->path()->toString();
@@ -59,7 +59,7 @@ final class UrlResolver implements Resolver
                 return $origin->withPath(
                     (new Path($originFolder))
                         ->pointingTo(new RelativePath($destination->toString())),
-                )->toString();
+                )->toStructure();
         }
 
         throw new DestinationUrlCannotBeResolved($destination->toString());
