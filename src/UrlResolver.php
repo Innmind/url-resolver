@@ -65,19 +65,6 @@ final class UrlResolver implements Resolver
         throw new DestinationUrlCannotBeResolved($destination->toString());
     }
 
-    public function folder(string $url): string
-    {
-        $this->validateUrl($url);
-        $parsed = Structure::of($url);
-        $path = new Path($parsed->path()->toString());
-
-        return $parsed
-            ->withPath(UrlPath::of($path->folder()->toString()))
-            ->withoutQuery()
-            ->withoutFragment()
-            ->toString();
-    }
-
     /**
      * Check if the given url is indeed one
      *

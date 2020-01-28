@@ -143,24 +143,4 @@ class UrlResolverTest extends TestCase
             'bar'
         );
     }
-
-    public function testFolder()
-    {
-        $this->assertSame(
-            'http://xn--example.com/foo/',
-            $this->resolver->folder('http://xn--example.com/foo/bar')
-        );
-        $this->assertSame(
-            'http://xn--example.com/',
-            $this->resolver->folder('http://xn--example.com/foo/')
-        );
-        $this->assertSame(
-            'http://xn--example.com/',
-            $this->resolver->folder('http://xn--example.com/')
-        );
-        $this->assertSame(
-            'http://xn--example.com/',
-            $this->resolver->folder('http://xn--example.com/foo/?foo=bar')
-        );
-    }
 }

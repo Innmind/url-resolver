@@ -14,9 +14,4 @@ interface Resolver
      *     * http://foo/bar and ?query=string => http://foo/bar?query=string
      */
     public function resolve(string $origin, string $destination): string;
-
-    /**
-     * Return the folder's path of the given url
-     */
-    public function folder(string $url): string;
 }
