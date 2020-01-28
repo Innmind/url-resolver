@@ -5,6 +5,7 @@ namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     UrlResolver,
+    Resolver,
     Exception\UrlException,
 };
 use PHPUnit\Framework\TestCase;
@@ -16,6 +17,11 @@ class UrlResolverTest extends TestCase
     public function setUp(): void
     {
         $this->resolver = new UrlResolver(['http', 'https']);
+    }
+
+    public function testInterface()
+    {
+        $this->assertInstanceOf(Resolver::class, $this->resolver);
     }
 
     public function testResolve()

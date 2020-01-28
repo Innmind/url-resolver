@@ -20,7 +20,7 @@ use Innmind\Url\{
     NullFragment,
 };
 
-final class UrlResolver implements ResolverInterface
+final class UrlResolver implements Resolver
 {
     private array $schemes;
     private UrlSpecification $urlSpecification;

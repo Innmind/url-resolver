@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-interface ResolverInterface
+interface Resolver
 {
     /**
      * Resolve a destination based to an origin point
