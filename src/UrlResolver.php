@@ -6,12 +6,6 @@ namespace Innmind\UrlResolver;
 use Innmind\UrlResolver\{
     Exception\DestinationUrlCannotBeResolved,
     Exception\OriginIsNotAValidUrl,
-    Specification\Url as UrlSpecification,
-    Specification\QueryString as QueryStringSpecification,
-    Specification\SchemeLess,
-    Specification\Fragment as FragmentSpecification,
-    Specification\AbsolutePath,
-    Specification\RelativePath as RelativePathSpecification,
 };
 use Innmind\Url\{
     Url as Structure,
@@ -23,12 +17,10 @@ use Innmind\Url\{
 final class UrlResolver implements Resolver
 {
     private array $schemes;
-    private UrlSpecification $urlSpecification;
 
     public function __construct(array $schemes = [])
     {
         $this->schemes = $schemes;
-        $this->urlSpecification = new UrlSpecification($schemes);
     }
 
     /**
@@ -38,33 +30,33 @@ final class UrlResolver implements Resolver
     {
         $destination = $this->createUrl($destination);
 
-        if ($this->urlSpecification->isSatisfiedBy($destination)) {
+        if ($destination->valid(...$this->schemes)) {
             return $destination->toString();
         }
 
         $origin = $this->createUrl($origin);
 
-        if (!$this->urlSpecification->isSatisfiedBy($origin)) {
+        if (!$origin->valid(...$this->schemes)) {
             throw new OriginIsNotAValidUrl($origin->toString());
         }
 
         switch (true) {
-            case (new QueryStringSpecification)->isSatisfiedBy($destination):
+            case $destination->queryString():
                 return $origin->withQueryString(
                     new QueryString($destination->toString()),
                 )->toString();
 
-            case (new FragmentSpecification)->isSatisfiedBy($destination):
+            case $destination->fragment():
                 return $origin->withFragment(
                     new Fragment($destination->toString()),
                 )->toString();
 
-            case (new AbsolutePath)->isSatisfiedBy($destination):
+            case $destination->absolutePath():
                 return $origin->withPath(
                     new Path($destination->toString()),
                 )->toString();
 
-            case (new RelativePathSpecification)->isSatisfiedBy($destination):
+            case $destination->relativePath():
                 $originFolder = (string) Structure::fromString($origin->toString())->path();
 
                 return $origin->withPath(
@@ -125,7 +117,7 @@ final class UrlResolver implements Resolver
      */
     private function validateUrl(string $url)
     {
-        if (!(new UrlSpecification)->isSatisfiedBy(new Url($url))) {
+        if (!(new Url($url))->valid(...$this->schemes)) {
             throw new UrlException(sprintf(
                 'The string "%s" is not a valid url',
                 $url
@@ -144,7 +136,7 @@ final class UrlResolver implements Resolver
     {
         $url = new Url($url);
 
-        if ((new SchemeLess)->isSatisfiedBy($url)) {
+        if ($url->schemeLess()) {
             $url = $url->appendScheme(
                 new Scheme($this->schemes[0] ?? 'http')
             );

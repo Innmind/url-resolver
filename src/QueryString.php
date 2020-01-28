@@ -3,10 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\{
-    Specification\QueryString as QueryStringSpecification,
-    Exception\DomainException,
-};
+use Innmind\UrlResolver\Exception\DomainException;
 use Innmind\Immutable\Str;
 
 final class QueryString
@@ -15,7 +12,7 @@ final class QueryString
 
     public function __construct(string $value)
     {
-        if (!(new QueryStringSpecification)->isSatisfiedBy(new Url($value))) {
+        if (!(new Url($value))->queryString()) {
             throw new DomainException($value);
         }
 

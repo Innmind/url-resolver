@@ -3,10 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\{
-    Specification\AbsolutePath,
-    Exception\DomainException,
-};
+use Innmind\UrlResolver\Exception\DomainException;
 use Innmind\Immutable\Str;
 
 final class Path
@@ -15,7 +12,7 @@ final class Path
 
     public function __construct(string $value)
     {
-        if (!(new AbsolutePath)->isSatisfiedBy(new Url($value))) {
+        if (!(new Url($value))->absolutePath()) {
             throw new DomainException($value);
         }
 

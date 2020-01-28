@@ -3,10 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\{
-    Specification\Fragment as FragmentSpecification,
-    Exception\DomainException,
-};
+use Innmind\UrlResolver\Exception\DomainException;
 use Innmind\Immutable\Str;
 
 final class Fragment
@@ -15,7 +12,7 @@ final class Fragment
 
     public function __construct(string $value)
     {
-        if (!(new FragmentSpecification)->isSatisfiedBy(new Url($value))) {
+        if (!(new Url($value))->fragment()) {
             throw new DomainException($value);
         }
 
