@@ -6,7 +6,7 @@ namespace Tests\Innmind\UrlResolver;
 use Innmind\UrlResolver\{
     UrlResolver,
     Resolver,
-    Exception\UrlException,
+    Exception\OriginIsNotAValidUrl,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -135,8 +135,8 @@ class UrlResolverTest extends TestCase
 
     public function testThrowIfOriginIsNotAUrl()
     {
-        $this->expectException(UrlException::class);
-        $this->expectExceptionMessage('The origin variable is not a url (given: http://)');
+        $this->expectException(OriginIsNotAValidUrl::class);
+        $this->expectExceptionMessage('http://');
 
         $this->resolver->resolve(
             '//',

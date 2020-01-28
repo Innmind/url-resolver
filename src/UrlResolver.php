@@ -4,8 +4,8 @@ declare(strict_types = 1);
 namespace Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
-    Exception\ResolutionException,
-    Exception\UrlException,
+    Exception\DestinationUrlCannotBeResolved,
+    Exception\OriginIsNotAValidUrl,
     Specification\Url as UrlSpecification,
     Specification\QueryString as QueryStringSpecification,
     Specification\SchemeLess,
@@ -45,10 +45,7 @@ final class UrlResolver implements Resolver
         $origin = $this->createUrl($origin);
 
         if (!$this->urlSpecification->isSatisfiedBy($origin)) {
-            throw new UrlException(sprintf(
-                'The origin variable is not a url (given: %s)',
-                $origin
-            ));
+            throw new OriginIsNotAValidUrl((string) $origin);
         }
 
         switch (true) {
@@ -76,10 +73,7 @@ final class UrlResolver implements Resolver
                 );
         }
 
-        throw new ResolutionException(sprintf(
-            'The destination url (%s) can\'t be resolved as a valid url',
-            $destination
-        ));
+        throw new DestinationUrlCannotBeResolved((string) $destination);
     }
 
     /**
