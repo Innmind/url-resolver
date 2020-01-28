@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\Exception\InvalidArgumentException;
+use Innmind\UrlResolver\Exception\DomainException;
 use Innmind\Immutable\Str;
 
 class Scheme extends Str
@@ -13,10 +13,7 @@ class Scheme extends Str
         parent::__construct($value);
 
         if (!$this->matches('/^[a-z]+$/')) {
-            throw new InvalidArgumentException(sprintf(
-                'The value "%s" is not a valid scheme',
-                $value
-            ));
+            throw new DomainException($value);
         }
     }
 }

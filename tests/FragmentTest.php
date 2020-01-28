@@ -5,7 +5,7 @@ namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Fragment,
-    Exception\InvalidArgumentException,
+    Exception\DomainException,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -18,8 +18,8 @@ class FragmentTest extends TestCase
 
     public function testThrowWhenInvalidValue()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The value "?foo=bar" is not a valid fragment');
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('?foo=bar');
 
         new Fragment('?foo=bar');
     }

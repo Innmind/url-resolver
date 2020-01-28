@@ -5,7 +5,7 @@ namespace Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Specification\AbsolutePath,
-    Exception\InvalidArgumentException,
+    Exception\DomainException,
 };
 use Innmind\Immutable\Str;
 
@@ -14,10 +14,7 @@ class Path extends Str
     public function __construct(string $value)
     {
         if (!(new AbsolutePath)->isSatisfiedBy(new Url($value))) {
-            throw new InvalidArgumentException(sprintf(
-                'The value "%s" is not a valid path',
-                $value
-            ));
+            throw new DomainException($value);
         }
 
         parent::__construct($value);

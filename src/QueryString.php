@@ -5,7 +5,7 @@ namespace Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Specification\QueryString as QueryStringSpecification,
-    Exception\InvalidArgumentException,
+    Exception\DomainException,
 };
 use Innmind\Immutable\Str;
 
@@ -14,10 +14,7 @@ class QueryString extends Str
     public function __construct(string $value)
     {
         if (!(new QueryStringSpecification)->isSatisfiedBy(new Url($value))) {
-            throw new InvalidArgumentException(sprintf(
-                'The value "%s" is not a valid query string',
-                $value
-            ));
+            throw new DomainException($value);
         }
 
         parent::__construct($value);

@@ -5,7 +5,7 @@ namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     QueryString,
-    Exception\InvalidArgumentException,
+    Exception\DomainException,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -29,8 +29,8 @@ class QueryStringTest extends TestCase
 
     public function testThrowWhenInvalidValue()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The value "#fragment" is not a valid query string');
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('#fragment');
 
         new QueryString('#fragment');
     }

@@ -5,7 +5,7 @@ namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Scheme,
-    Exception\InvalidArgumentException,
+    Exception\DomainException,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -21,8 +21,8 @@ class SchemeTest extends TestCase
 
     public function testThrowWhenInvalidScheme()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The value "42" is not a valid scheme');
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('42');
 
         new Scheme('42');
     }

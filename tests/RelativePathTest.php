@@ -5,7 +5,7 @@ namespace Tests\Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     RelativePath,
-    Exception\InvalidArgumentException,
+    Exception\DomainException,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -41,8 +41,8 @@ class RelativePathTest extends TestCase
 
     public function testThrowWhenInvalidRelativePath()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The value "/relative/path" is not a valid relative path');
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('/relative/path');
 
         new RelativePath('/relative/path');
     }

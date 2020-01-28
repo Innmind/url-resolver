@@ -5,7 +5,7 @@ namespace Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Specification\RelativePath as RelativePathSpecification,
-    Exception\InvalidArgumentException,
+    Exception\DomainException,
 };
 use Innmind\Immutable\Str;
 
@@ -14,10 +14,7 @@ class RelativePath extends Str
     public function __construct(string $value)
     {
         if (!(new RelativePathSpecification)->isSatisfiedBy(new Url($value))) {
-            throw new InvalidArgumentException(sprintf(
-                'The value "%s" is not a valid relative path',
-                $value
-            ));
+            throw new DomainException($value);
         }
 
         parent::__construct($value);
