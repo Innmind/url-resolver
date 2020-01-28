@@ -12,121 +12,121 @@ use PHPUnit\Framework\TestCase;
 
 class UrlResolverTest extends TestCase
 {
-    protected $resolver;
+    protected $resolve;
 
     public function setUp(): void
     {
-        $this->resolver = new UrlResolver('http', 'https');
+        $this->resolve = new UrlResolver('http', 'https');
     }
 
     public function testInterface()
     {
-        $this->assertInstanceOf(Resolver::class, $this->resolver);
+        $this->assertInstanceOf(Resolver::class, $this->resolve);
     }
 
     public function testResolve()
     {
         $this->assertSame(
             'http://example.com/foo',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://example.com',
                 'foo'
             )
         );
         $this->assertSame(
             'http://example.com/foo',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://example.com/bar',
                 'http://example.com/foo'
             )
         );
         $this->assertSame(
             'http://xn--example.com/foo/bar',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/baz',
                 './bar'
             )
         );
         $this->assertSame(
             'http://xn--example.com/foo/bar',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/baz',
                 'bar'
             )
         );
         $this->assertSame(
             'http://xn--example.com/foo/bar/baz?query=string#fragment',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/baz',
                 'bar/baz?query=string#fragment'
             )
         );
         $this->assertSame(
             'http://xn--example.com/bar/foo',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/baz',
                 '../bar/foo'
             )
         );
         $this->assertSame(
             'http://xn--example.com/foo/baz?query=string',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/baz',
                 '?query=string'
             )
         );
         $this->assertSame(
             'http://xn--example.com/foo/baz/?query=string',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/baz/',
                 '?query=string'
             )
         );
         $this->assertSame(
             'http://xn--example.com/foo/baz/#fragment',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/baz/',
                 '#fragment'
             )
         );
         $this->assertSame(
             'http://xn--example.com/foo/baz#fragment',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/baz',
                 '#fragment'
             )
         );
         $this->assertSame(
             'http://xn--example.com/absolute',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/baz',
                 '/absolute'
             )
         );
         $this->assertSame(
             'http://xn--example.com/absolute',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com/foo/',
                 '/absolute'
             )
         );
         $this->assertSame(
             'http://xn--example.com:80/',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn--example.com:80/foo/',
                 '../'
             )
         );
         $this->assertSame(
             'https://xn--example.com:443/',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'https://xn--example.com:443/foo/',
                 '../'
             )
         );
         $this->assertSame(
             'http://xn--example.com/',
-            $this->resolver->resolve(
+            ($this->resolve)(
                 'http://xn-elsewhere.com/',
                 '//xn--example.com/'
             )
@@ -138,7 +138,7 @@ class UrlResolverTest extends TestCase
         $this->expectException(OriginIsNotAValidUrl::class);
         $this->expectExceptionMessage('http://');
 
-        $this->resolver->resolve(
+        ($this->resolve)(
             '//',
             'bar'
         );

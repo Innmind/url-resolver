@@ -23,7 +23,7 @@ final class UrlResolver implements Resolver
         $this->schemes = $schemes;
     }
 
-    public function resolve(string $origin, string $destination): string
+    public function __invoke(string $origin, string $destination): string
     {
         $destination = $this->createUrl($destination);
 

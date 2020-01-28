@@ -13,5 +13,5 @@ interface Resolver
      *     * http://foo/bar and http://bar/ => http://bar/
      *     * http://foo/bar and ?query=string => http://foo/bar?query=string
      */
-    public function resolve(string $origin, string $destination): string;
+    public function __invoke(string $origin, string $destination): string;
 }
