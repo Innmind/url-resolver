@@ -5,7 +5,7 @@ namespace Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Specification\RelativePath as RelativePathSpecification,
-    Exception\InvalidArgumentException
+    Exception\InvalidArgumentException,
 };
 use Innmind\Immutable\Str;
 

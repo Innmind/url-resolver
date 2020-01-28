@@ -9,7 +9,7 @@ use Innmind\Url\{
     Fragment as Frag,
     Path as UrlPath,
     NullFragment,
-    NullQuery
+    NullQuery,
 };
 use Innmind\Immutable\Str;
 

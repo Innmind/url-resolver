@@ -5,7 +5,7 @@ namespace Innmind\UrlResolver;
 
 use Innmind\UrlResolver\{
     Specification\Fragment as FragmentSpecification,
-    Exception\InvalidArgumentException
+    Exception\InvalidArgumentException,
 };
 use Innmind\Immutable\Str;
 

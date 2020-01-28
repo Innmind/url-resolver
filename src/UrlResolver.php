@@ -11,20 +11,19 @@ use Innmind\UrlResolver\{
     Specification\SchemeLess,
     Specification\Fragment as FragmentSpecification,
     Specification\AbsolutePath,
-    Specification\RelativePath as RelativePathSpecification
+    Specification\RelativePath as RelativePathSpecification,
 };
 use Innmind\Url\{
     Url as Structure,
     Path as UrlPath,
     NullQuery,
-    NullFragment
+    NullFragment,
 };
 
 final class UrlResolver implements ResolverInterface
 {
-    private $schemes;
-    private $urlSpecification;
-    private $parser;
+    private array $schemes;
+    private UrlSpecification $urlSpecification;
 
     public function __construct(array $schemes = [])
     {

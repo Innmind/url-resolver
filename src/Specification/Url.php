@@ -32,7 +32,7 @@ class Url
             (?:\# (?:[\pL\pN\-._\~!$&\'()*+,;=:@/?]|%%[0-9A-Fa-f]{2})* )?   # a fragment (optional)
         $~ixu';
 
-    private $regex;
+    private string $regex;
 
     public function __construct(array $schemes = [])
     {
