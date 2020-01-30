@@ -9,6 +9,7 @@ use Innmind\Url\{
     Authority,
     Scheme as UrlScheme,
     Path as UrlPath,
+    Query as UrlQuery,
 };
 
 final class UrlResolver implements Resolver
@@ -40,15 +41,16 @@ final class UrlResolver implements Resolver
                 ->withFragment($destination->fragment());
         }
 
+        if ($destination->path()->equals(UrlPath::none()) && !$destination->query()->equals(UrlQuery::none())) {
+            return $origin
+                ->withQuery($destination->query())
+                ->withFragment($destination->fragment());
+        }
+
         $destination = $this->createUrl($destination->toString());
         $origin = $this->createUrl($origin->toString());
 
         switch (true) {
-            case $destination->queryString():
-                return $origin->withQueryString(
-                    new QueryString($destination->toString()),
-                )->toUrl();
-
             case $destination->fragment():
                 return $origin->withFragment(
                     new Fragment($destination->toString()),
