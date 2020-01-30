@@ -10,6 +10,7 @@ use Innmind\Url\{
     Scheme as UrlScheme,
     Path as UrlPath,
     Query as UrlQuery,
+    Fragment as UrlFragment,
 };
 
 final class UrlResolver implements Resolver
@@ -47,15 +48,14 @@ final class UrlResolver implements Resolver
                 ->withFragment($destination->fragment());
         }
 
+        if ($destination->path()->equals(UrlPath::none()) && !$destination->fragment()->equals(UrlFragment::none())) {
+            return $origin->withFragment($destination->fragment());
+        }
+
         $destination = $this->createUrl($destination->toString());
         $origin = $this->createUrl($origin->toString());
 
         switch (true) {
-            case $destination->fragment():
-                return $origin->withFragment(
-                    new Fragment($destination->toString()),
-                )->toUrl();
-
             case $destination->relativePath():
                 $originFolder = Url::of($origin->toString())->path()->toString();
 
