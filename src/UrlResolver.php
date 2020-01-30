@@ -3,10 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\{
-    Exception\DestinationUrlCannotBeResolved,
-    Exception\DomainException,
-};
+use Innmind\UrlResolver\Exception\DestinationUrlCannotBeResolved;
 use Innmind\Url\{
     Url,
     Authority,
@@ -67,18 +64,6 @@ final class UrlResolver implements Resolver
         }
 
         throw new DestinationUrlCannotBeResolved($destination->toString());
-    }
-
-    /**
-     * Check if the given url is indeed one
-     *
-     * @throws DomainException If it's not one
-     */
-    private function validateUrl(string $url): void
-    {
-        if (!(new UrlRepresentation($url))->valid(...$this->schemes)) {
-            throw new DomainException($url);
-        }
     }
 
     /**
