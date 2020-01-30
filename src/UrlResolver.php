@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\Exception\DestinationUrlCannotBeResolved;
 use Innmind\Url\{
     Url,
     Authority,
@@ -12,6 +11,7 @@ use Innmind\Url\{
     Query as UrlQuery,
     Fragment as UrlFragment,
 };
+use Innmind\Immutable\Str;
 
 final class UrlResolver implements Resolver
 {
@@ -52,35 +52,40 @@ final class UrlResolver implements Resolver
             return $origin->withFragment($destination->fragment());
         }
 
-        $destination = $this->createUrl($destination->toString());
-        $origin = $this->createUrl($origin->toString());
+        $destinationPath = Str::of($destination->path()->toString());
+        $originPath = $origin->path();
 
-        switch (true) {
-            case $destination->relativePath():
-                $originFolder = Url::of($origin->toString())->path()->toString();
-
-                return $origin->withPath(
-                    (new Path($originFolder))
-                        ->pointingTo(new RelativePath($destination->toString())),
-                )->toUrl();
+        if (!$originPath->directory()) {
+            $originPath = $this->up($originPath);
         }
 
-        throw new DestinationUrlCannotBeResolved($destination->toString());
+        if ($destinationPath->startsWith('./')) {
+            $destinationPath = $destinationPath->substring(2);
+        }
+
+        if ($destinationPath->startsWith('../')) {
+            $destinationPath = $destinationPath->substring(3);
+            $originPath = $this->up($originPath);
+        }
+
+        if ($destinationPath->empty()) {
+            return $origin
+                ->withPath($originPath)
+                ->withQuery($destination->query())
+                ->withFragment($destination->fragment());
+        }
+
+        return $origin
+            ->withPath($originPath->resolve(UrlPath::of($destinationPath->toString())))
+            ->withQuery($destination->query())
+            ->withFragment($destination->fragment());
     }
 
-    /**
-     * Create a Url object from the given string
-     */
-    private function createUrl(string $url): UrlRepresentation
+    private function up(UrlPath $path): UrlPath
     {
-        $url = new UrlRepresentation($url);
+        $path = $path->toString();
+        $up = \dirname($path);
 
-        if ($url->schemeLess()) {
-            $url = $url->appendScheme(
-                new Scheme($this->schemes[0] ?? 'http')
-            );
-        }
-
-        return $url;
+        return UrlPath::of(\rtrim($up, '/').'/');
     }
 }

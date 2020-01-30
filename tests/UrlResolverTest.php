@@ -57,6 +57,15 @@ class UrlResolverTest extends TestCase
             ['http://xn--example.com:80/foo/', '../', 'http://xn--example.com:80/'],
             ['https://xn--example.com:443/foo/', '../', 'https://xn--example.com:443/'],
             ['http://xn-elsewhere.com/', '//xn--example.com/', 'http://xn--example.com/'],
+            ['/path/to/content', '../bar', '/path/bar'],
+            ['/path/to/content', './bar', '/path/to/bar'],
+            ['/path/to/content', 'bar', '/path/to/bar'],
+            ['/path/to/content?query=foo#fragment', 'bar', '/path/to/bar'],
+            ['/path/to/content/', '../bar', '/path/to/bar'],
+            ['/path/to/content/', './bar', '/path/to/content/bar'],
+            ['/path/to/content/', 'bar', '/path/to/content/bar'],
+            ['/path/to/content/?query=foo#fragment', 'bar', '/path/to/content/bar'],
+            ['/foo/baz', '../bar/foo', '/bar/foo'],
         ];
     }
 }
