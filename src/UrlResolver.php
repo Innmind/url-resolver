@@ -25,13 +25,20 @@ final class UrlResolver implements Resolver
 
     public function __invoke(Url $origin, Url $destination): Url
     {
-        if (!$destination->authority()->equals(Authority::none())) {
-            if ($destination->scheme()->equals(UrlScheme::none())) {
-                $destination = $destination->withScheme(
-                    UrlScheme::of($this->schemes[0] ?? 'http'),
-                );
-            }
+        $resolved = $this->resolve($origin, $destination);
 
+        if (!$resolved->authority()->equals(Authority::none()) && $resolved->scheme()->equals(UrlScheme::none())) {
+            $resolved = $resolved->withScheme(
+                UrlScheme::of($this->schemes[0] ?? 'http'),
+            );
+        }
+
+        return $resolved;
+    }
+
+    private function resolve(Url $origin, Url $destination): Url
+    {
+        if (!$destination->authority()->equals(Authority::none())) {
             return $destination;
         }
 

@@ -42,6 +42,7 @@ class UrlResolverTest extends TestCase
     public function cases(): array
     {
         return [
+            ['//example.com', 'foo', 'http://example.com/foo'],
             ['http://example.com', 'foo', 'http://example.com/foo'],
             ['http://example.com/bar', 'http://example.com/foo', 'http://example.com/foo'],
             ['http://xn--example.com/foo/baz', './bar', 'http://xn--example.com/foo/bar'],
