@@ -36,6 +36,13 @@ final class UrlResolver implements Resolver
             return $destination;
         }
 
+        if (!$destination->path()->equals(UrlPath::none()) && $destination->path()->absolute()) {
+            return $origin
+                ->withPath($destination->path())
+                ->withQuery($destination->query())
+                ->withFragment($destination->fragment());
+        }
+
         $destination = $this->createUrl($destination->toString());
         $origin = $this->createUrl($origin->toString());
 
@@ -48,11 +55,6 @@ final class UrlResolver implements Resolver
             case $destination->fragment():
                 return $origin->withFragment(
                     new Fragment($destination->toString()),
-                )->toUrl();
-
-            case $destination->absolutePath():
-                return $origin->withPath(
-                    new Path($destination->toString()),
                 )->toUrl();
 
             case $destination->relativePath():
