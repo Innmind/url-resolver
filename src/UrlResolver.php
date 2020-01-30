@@ -3,160 +3,96 @@ declare(strict_types = 1);
 
 namespace Innmind\UrlResolver;
 
-use Innmind\UrlResolver\{
-    Exception\ResolutionException,
-    Exception\UrlException,
-    Specification\Url as UrlSpecification,
-    Specification\QueryString as QueryStringSpecification,
-    Specification\SchemeLess,
-    Specification\Fragment as FragmentSpecification,
-    Specification\AbsolutePath,
-    Specification\RelativePath as RelativePathSpecification
-};
 use Innmind\Url\{
-    Url as Structure,
+    Url,
+    Authority,
+    Scheme as UrlScheme,
     Path as UrlPath,
-    NullQuery,
-    NullFragment
+    Query as UrlQuery,
+    Fragment as UrlFragment,
 };
+use Innmind\Immutable\Str;
 
-final class UrlResolver implements ResolverInterface
+final class UrlResolver implements Resolver
 {
-    private $schemes;
-    private $urlSpecification;
-    private $parser;
+    /** @var list<string> */
+    private array $schemes;
 
-    public function __construct(array $schemes = [])
+    public function __construct(string ...$schemes)
     {
         $this->schemes = $schemes;
-        $this->urlSpecification = new UrlSpecification($schemes);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function resolve(string $origin, string $destination): string
+    public function __invoke(Url $origin, Url $destination): Url
     {
-        $destination = $this->createUrl($destination);
+        $resolved = $this->resolve($origin, $destination);
 
-        if ($this->urlSpecification->isSatisfiedBy($destination)) {
-            return (string) $destination;
-        }
-
-        $origin = $this->createUrl($origin);
-
-        if (!$this->urlSpecification->isSatisfiedBy($origin)) {
-            throw new UrlException(sprintf(
-                'The origin variable is not a url (given: %s)',
-                $origin
-            ));
-        }
-
-        switch (true) {
-            case (new QueryStringSpecification)->isSatisfiedBy($destination):
-                return (string) $origin->withQueryString(
-                    new QueryString((string) $destination)
-                );
-
-            case (new FragmentSpecification)->isSatisfiedBy($destination):
-                return (string) $origin->withFragment(
-                    new Fragment((string) $destination)
-                );
-
-            case (new AbsolutePath)->isSatisfiedBy($destination):
-                return (string) $origin->withPath(
-                    new Path((string) $destination)
-                );
-
-            case (new RelativePathSpecification)->isSatisfiedBy($destination):
-                $originFolder = (string) Structure::fromString((string) $origin)->path();
-
-                return (string) $origin->withPath(
-                    (new Path($originFolder))
-                        ->pointingTo(new RelativePath((string) $destination))
-                );
-        }
-
-        throw new ResolutionException(sprintf(
-            'The destination url (%s) can\'t be resolved as a valid url',
-            $destination
-        ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function folder(string $url): string
-    {
-        $this->validateUrl($url);
-        $parsed = Structure::fromString($url);
-        $path = new Path((string) $parsed->path());
-
-        return (string) $parsed
-            ->withPath(new UrlPath((string) $path->folder()))
-            ->withQuery(new NullQuery)
-            ->withFragment(new NullFragment);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isFolder(string $url): bool
-    {
-        $this->validateUrl($url);
-        $parsed = Structure::fromString($url);
-        $path = new Path((string) $parsed->path());
-
-        return $path->isFolder();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function file(string $url): string
-    {
-        $this->validateUrl($url);
-        $parsed = Structure::fromString($url);
-
-        return (string) $parsed->withFragment(new NullFragment);
-    }
-
-    /**
-     * Check if the given url is indeed one
-     *
-     * @param string $url
-     *
-     * @throws UrlException If it's not one
-     *
-     * @return void
-     */
-    private function validateUrl(string $url)
-    {
-        if (!(new UrlSpecification)->isSatisfiedBy(new Url($url))) {
-            throw new UrlException(sprintf(
-                'The string "%s" is not a valid url',
-                $url
-            ));
-        }
-    }
-
-    /**
-     * Create a Url object from the given string
-     *
-     * @param string $url
-     *
-     * @return Url
-     */
-    private function createUrl(string $url): Url
-    {
-        $url = new Url($url);
-
-        if ((new SchemeLess)->isSatisfiedBy($url)) {
-            $url = $url->appendScheme(
-                new Scheme($this->schemes[0] ?? 'http')
+        if (!$resolved->authority()->equals(Authority::none()) && $resolved->scheme()->equals(UrlScheme::none())) {
+            $resolved = $resolved->withScheme(
+                UrlScheme::of($this->schemes[0] ?? 'http'),
             );
         }
 
-        return $url;
+        return $resolved;
+    }
+
+    private function resolve(Url $origin, Url $destination): Url
+    {
+        if (!$destination->authority()->equals(Authority::none())) {
+            return $destination;
+        }
+
+        if (!$destination->path()->equals(UrlPath::none()) && $destination->path()->absolute()) {
+            return $origin
+                ->withPath($destination->path())
+                ->withQuery($destination->query())
+                ->withFragment($destination->fragment());
+        }
+
+        if ($destination->path()->equals(UrlPath::none()) && !$destination->query()->equals(UrlQuery::none())) {
+            return $origin
+                ->withQuery($destination->query())
+                ->withFragment($destination->fragment());
+        }
+
+        if ($destination->path()->equals(UrlPath::none()) && !$destination->fragment()->equals(UrlFragment::none())) {
+            return $origin->withFragment($destination->fragment());
+        }
+
+        $destinationPath = Str::of($destination->path()->toString());
+        $originPath = $origin->path();
+
+        if (!$originPath->directory()) {
+            $originPath = $this->up($originPath);
+        }
+
+        if ($destinationPath->startsWith('./')) {
+            $destinationPath = $destinationPath->substring(2);
+        }
+
+        if ($destinationPath->startsWith('../')) {
+            $destinationPath = $destinationPath->substring(3);
+            $originPath = $this->up($originPath);
+        }
+
+        if ($destinationPath->empty()) {
+            return $origin
+                ->withPath($originPath)
+                ->withQuery($destination->query())
+                ->withFragment($destination->fragment());
+        }
+
+        return $origin
+            ->withPath($originPath->resolve(UrlPath::of($destinationPath->toString())))
+            ->withQuery($destination->query())
+            ->withFragment($destination->fragment());
+    }
+
+    private function up(UrlPath $path): UrlPath
+    {
+        $path = $path->toString();
+        $up = \dirname($path);
+
+        return UrlPath::of(\rtrim($up, '/').'/');
     }
 }

@@ -3,194 +3,70 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\UrlResolver;
 
-use Innmind\UrlResolver\UrlResolver;
+use Innmind\UrlResolver\{
+    UrlResolver,
+    Resolver,
+    Exception\OriginIsNotAValidUrl,
+};
+use Innmind\Url\Url;
 use PHPUnit\Framework\TestCase;
 
 class UrlResolverTest extends TestCase
 {
-    protected $resolver;
+    protected $resolve;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->resolver = new UrlResolver(['http', 'https']);
+        $this->resolve = new UrlResolver('http', 'https');
     }
 
-    public function testResolve()
+    public function testInterface()
     {
-        $this->assertSame(
-            'http://example.com/foo',
-            $this->resolver->resolve(
-                'http://example.com',
-                'foo'
-            )
-        );
-        $this->assertSame(
-            'http://example.com/foo',
-            $this->resolver->resolve(
-                'http://example.com/bar',
-                'http://example.com/foo'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/bar',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/baz',
-                './bar'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/bar',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/baz',
-                'bar'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/bar/baz?query=string#fragment',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/baz',
-                'bar/baz?query=string#fragment'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/bar/foo',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/baz',
-                '../bar/foo'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/baz?query=string',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/baz',
-                '?query=string'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/baz/?query=string',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/baz/',
-                '?query=string'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/baz/#fragment',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/baz/',
-                '#fragment'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/baz#fragment',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/baz',
-                '#fragment'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/absolute',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/baz',
-                '/absolute'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/absolute',
-            $this->resolver->resolve(
-                'http://xn--example.com/foo/',
-                '/absolute'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com:80/',
-            $this->resolver->resolve(
-                'http://xn--example.com:80/foo/',
-                '../'
-            )
-        );
-        $this->assertSame(
-            'https://xn--example.com:443/',
-            $this->resolver->resolve(
-                'https://xn--example.com:443/foo/',
-                '../'
-            )
-        );
-        $this->assertSame(
-            'http://xn--example.com/',
-            $this->resolver->resolve(
-                'http://xn-elsewhere.com/',
-                '//xn--example.com/'
-            )
-        );
+        $this->assertInstanceOf(Resolver::class, $this->resolve);
     }
 
     /**
-     * @expectedException Innmind\UrlResolver\Exception\UrlException
-     * @expectedExceptionMessage The origin variable is not a url (given: http://)
+     * @dataProvider cases
      */
-    public function testThrowIfOriginIsNOtAUrl()
+    public function testResolve(string $source, string $destination, string $expected)
     {
-        $this->resolver->resolve(
-            '//',
-            'bar'
+        $resolved = ($this->resolve)(
+            Url::of($source),
+            Url::of($destination),
         );
+
+        $this->assertInstanceOf(Url::class, $resolved);
+        $this->assertSame($expected, $resolved->toString());
     }
 
-    public function testFolder()
+    public function cases(): array
     {
-        $this->assertSame(
-            'http://xn--example.com/foo/',
-            $this->resolver->folder('http://xn--example.com/foo/bar')
-        );
-        $this->assertSame(
-            'http://xn--example.com/',
-            $this->resolver->folder('http://xn--example.com/foo/')
-        );
-        $this->assertSame(
-            'http://xn--example.com/',
-            $this->resolver->folder('http://xn--example.com/')
-        );
-        $this->assertSame(
-            'http://xn--example.com/',
-            $this->resolver->folder('http://xn--example.com/foo/?foo=bar')
-        );
-    }
-
-    public function testIsFolder()
-    {
-        $this->assertTrue($this->resolver->isFolder('http://xn--example.com/'));
-        $this->assertTrue($this->resolver->isFolder('http://xn--example.com/foo/'));
-        $this->assertTrue($this->resolver->isFolder('http://xn--example.com/foo/'));
-        $this->assertTrue($this->resolver->isFolder('http://xn--example.com/foo/?foo=bar'));
-        $this->assertFalse($this->resolver->isFolder('http://xn--example.com/foo'));
-        $this->assertFalse($this->resolver->isFolder('http://xn--example.com/foo#/'));
-    }
-
-    public function testFile()
-    {
-        $this->assertSame(
-            'http://xn--example.com/foo',
-            $this->resolver->file('http://xn--example.com/foo')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo?query=string',
-            $this->resolver->file('http://xn--example.com/foo?query=string')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo',
-            $this->resolver->file('http://xn--example.com/foo#fragment')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/',
-            $this->resolver->file('http://xn--example.com/foo/')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/?foo',
-            $this->resolver->file('http://xn--example.com/foo/?foo')
-        );
-        $this->assertSame(
-            'http://xn--example.com/foo/',
-            $this->resolver->file('http://xn--example.com/foo/#fragment')
-        );
+        return [
+            ['//example.com', 'foo', 'http://example.com/foo'],
+            ['http://example.com', 'foo', 'http://example.com/foo'],
+            ['http://example.com/bar', 'http://example.com/foo', 'http://example.com/foo'],
+            ['http://xn--example.com/foo/baz', './bar', 'http://xn--example.com/foo/bar'],
+            ['http://xn--example.com/foo/baz', 'bar', 'http://xn--example.com/foo/bar'],
+            ['http://xn--example.com/foo/baz', 'bar/baz?query=string#fragment', 'http://xn--example.com/foo/bar/baz?query=string#fragment'],
+            ['http://xn--example.com/foo/baz', '../bar/foo', 'http://xn--example.com/bar/foo'],
+            ['http://xn--example.com/foo/baz', '?query=string', 'http://xn--example.com/foo/baz?query=string'],
+            ['http://xn--example.com/foo/baz/', '?query=string', 'http://xn--example.com/foo/baz/?query=string'],
+            ['http://xn--example.com/foo/baz/', '#fragment', 'http://xn--example.com/foo/baz/#fragment'],
+            ['http://xn--example.com/foo/baz', '#fragment', 'http://xn--example.com/foo/baz#fragment'],
+            ['http://xn--example.com/foo/baz', '/absolute', 'http://xn--example.com/absolute'],
+            ['http://xn--example.com/foo/', '/absolute', 'http://xn--example.com/absolute'],
+            ['http://xn--example.com:80/foo/', '../', 'http://xn--example.com:80/'],
+            ['https://xn--example.com:443/foo/', '../', 'https://xn--example.com:443/'],
+            ['http://xn-elsewhere.com/', '//xn--example.com/', 'http://xn--example.com/'],
+            ['/path/to/content', '../bar', '/path/bar'],
+            ['/path/to/content', './bar', '/path/to/bar'],
+            ['/path/to/content', 'bar', '/path/to/bar'],
+            ['/path/to/content?query=foo#fragment', 'bar', '/path/to/bar'],
+            ['/path/to/content/', '../bar', '/path/to/bar'],
+            ['/path/to/content/', './bar', '/path/to/content/bar'],
+            ['/path/to/content/', 'bar', '/path/to/content/bar'],
+            ['/path/to/content/?query=foo#fragment', 'bar', '/path/to/content/bar'],
+            ['/foo/baz', '../bar/foo', '/bar/foo'],
+        ];
     }
 }

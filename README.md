@@ -1,18 +1,22 @@
 # UrlResolver
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Innmind/url-resolver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Innmind/url-resolver/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Innmind/url-resolver/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Innmind/url-resolver/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/Innmind/url-resolver/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Innmind/url-resolver/build-status/master)
-
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/926af5f8-5942-452d-8f22-b080480673b0/big.png)](https://insight.sensiolabs.com/projects/926af5f8-5942-452d-8f22-b080480673b0)
+| `develop` |
+|-----------|
+| [![codecov](https://codecov.io/gh/Innmind/url-resolver/branch/develop/graph/badge.svg)](https://codecov.io/gh/Innmind/url-resolver) |
+| [![Build Status](https://github.com/Innmind/url-resolver/workflows/CI/badge.svg)](https://github.com/Innmind/url-resolver/actions?query=workflow%3ACI) |
 
 Allow to build an absolute url from a source url and a destination.
 
 Example:
 ```php
-$url = $resolver->resolve(
-    'http://example.com/foo/',
-    'bar/baz?query=string#fragment'
+use Innmind\UrlResolver\UrlResolver;
+use Innmind\Url\Url;
+
+$resolve = new UrlResolver;
+
+$url = $resolve(
+    Url::of('http://example.com/foo/'),
+    Url::of('./bar/baz?query=string#fragment'),
 );
 // $url resolves to http://example.com/foo/bar/baz?query=string#fragment
 ```
