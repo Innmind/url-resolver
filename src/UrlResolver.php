@@ -21,7 +21,7 @@ final class UrlResolver implements Resolver
     /**
      * @no-named-arguments
      */
-    public function __construct(string ...$schemes)
+    private function __construct(string ...$schemes)
     {
         $this->schemes = $schemes;
     }
@@ -37,6 +37,14 @@ final class UrlResolver implements Resolver
         }
 
         return $resolved;
+    }
+
+    /**
+     * @no-named-arguments
+     */
+    public static function of(string ...$schemes): self
+    {
+        return new self(...$schemes);
     }
 
     private function resolve(Url $origin, Url $destination): Url
