@@ -13,6 +13,9 @@ use Innmind\Url\{
 };
 use Innmind\Immutable\Str;
 
+/**
+ * @psalm-immutable
+ */
 final class UrlResolver implements Resolver
 {
     /** @var list<string> */
@@ -41,6 +44,7 @@ final class UrlResolver implements Resolver
 
     /**
      * @no-named-arguments
+     * @psalm-pure
      */
     public static function of(string ...$schemes): self
     {
