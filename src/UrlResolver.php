@@ -13,12 +13,18 @@ use Innmind\Url\{
 };
 use Innmind\Immutable\Str;
 
+/**
+ * @psalm-immutable
+ */
 final class UrlResolver implements Resolver
 {
     /** @var list<string> */
     private array $schemes;
 
-    public function __construct(string ...$schemes)
+    /**
+     * @no-named-arguments
+     */
+    private function __construct(string ...$schemes)
     {
         $this->schemes = $schemes;
     }
@@ -34,6 +40,15 @@ final class UrlResolver implements Resolver
         }
 
         return $resolved;
+    }
+
+    /**
+     * @no-named-arguments
+     * @psalm-pure
+     */
+    public static function of(string ...$schemes): self
+    {
+        return new self(...$schemes);
     }
 
     private function resolve(Url $origin, Url $destination): Url
