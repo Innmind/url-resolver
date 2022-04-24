@@ -17,7 +17,7 @@ class UrlResolverTest extends TestCase
 
     public function setUp(): void
     {
-        $this->resolve = new UrlResolver('http', 'https');
+        $this->resolve = UrlResolver::of('http', 'https');
     }
 
     public function testInterface()

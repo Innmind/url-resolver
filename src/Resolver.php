@@ -5,6 +5,9 @@ namespace Innmind\UrlResolver;
 
 use Innmind\Url\Url;
 
+/**
+ * @psalm-immutable
+ */
 interface Resolver
 {
     /**

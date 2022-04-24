@@ -11,7 +11,7 @@ Example:
 use Innmind\UrlResolver\UrlResolver;
 use Innmind\Url\Url;
 
-$resolve = new UrlResolver;
+$resolve = UrlResolver::of('http', 'https');
 
 $url = $resolve(
     Url::of('http://example.com/foo/'),
