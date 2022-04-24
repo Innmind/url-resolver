@@ -18,6 +18,9 @@ final class UrlResolver implements Resolver
     /** @var list<string> */
     private array $schemes;
 
+    /**
+     * @no-named-arguments
+     */
     public function __construct(string ...$schemes)
     {
         $this->schemes = $schemes;
