@@ -15,8 +15,8 @@
         "issues": "http://github.com/Innmind/url-resolver/issues"
     },
     "require": {
-        "php": "~8.1",
-        "innmind/immutable": "~4.0",
+        "php": "~8.2",
+        "innmind/immutable": "~4.0|~5.0",
         "innmind/url": "~4.0"
     },
     "autoload": {
